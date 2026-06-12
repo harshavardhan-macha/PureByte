@@ -17,17 +17,6 @@ function App() {
   );
 }
 
-export default App;
-
-
-function App() {
-
-  return (
-    <>
-      <div>PureByte</div>
-    </>
-  )
-}
 
 export default App;
 
