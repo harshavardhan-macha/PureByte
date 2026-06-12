@@ -1,10 +1,11 @@
+import { ArrowRight, ScanLine } from "lucide-react";
 import mobile from "../assets/mobile.png";
 function Hero() {
   return (
     <section className="flex items-center justify-between px-6 py-2 ">
 
     <div className="min-h-screen flex flex-col  px-6 py-45">
-      <p className="text-green-500 font-semibold px-10 ">
+      <p className="text-green-500 font-semibold px-10">
         AI Powered Food Quality Detection
       </p>
 
@@ -20,12 +21,16 @@ function Hero() {
       </p>
 
       <div className="mt-6 flex gap-4 px-10">
-        <button className="bg-green-500 text-white px-3 py-3 rounded-full">
-          Scan Your Food
+        <button className="flex items-center gap-2 bg-green-600 text-white px-5 py-3 rounded-full hover:bg-green-700 transition">
+        <ScanLine size={20} />
+        Scan your food
         </button>
+      
 
-        <button className="border px-3 py-3 rounded-full">
+        <button className=" flex items-center gap-2 bg-white text-green-600 border border-green-600 hover:bg-green-50 transition px-5 py-3 rounded-full">
+          
           Explore Features
+          <ArrowRight size={18}/>
         </button>
         </div>
   </div>
