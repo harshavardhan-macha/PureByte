@@ -11,7 +11,7 @@ return (
       <Hero />
     </section>
 
-  <div className="h-22 bg-gradient-to-b  from-green-200 via-green-100 to-white blur-sm opacity-80"></div>
+  <div className="h-10 bg-gradient-to-b  pb-15 from-green-200 via-green-100 to-white blur-sm opacity-80"></div>
     <section>
       <Features />
     </section>
