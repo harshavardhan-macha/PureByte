@@ -1,22 +1,15 @@
-
-import Header from "./components/Header";
-import Hero from "./components/Hero";
-import Features from "./components/Features";
+import { BrowserRouter, Routes , Route } from "react-router-dom";
+import Login from "./components/Login";
+import Home from "./Home";
 function App() {
-  return (
-    <>
-    <Header />
-    <section>
-      <Hero />
-    </section>
-    <section>
-      <Features />
-    </section>
-      </>
-      
+    return(
+    <BrowserRouter>
+     <Routes> 
+      <Route path="/" element={<Home />} />
+      <Route path="/login" element={<Login />} />
+    </Routes>
+    </BrowserRouter>
   );
 }
 
-
 export default App;
-

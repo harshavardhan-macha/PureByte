@@ -1,8 +1,8 @@
-import Login from "./Login";
+import LoginButton from "./LoginButton";
 import logo from "../assets/logo.png";
-function Header() {
+ function Header() {
   return (
-    <header className="flex items-center px-6 py-4 gap-6">
+    <header className="flex items-center px-6 py-3 gap-6">
       <div className="flex items-center gap-2">
         <img src={logo} alt="logo" className="w-8 h-8"/>
       <h1 className=" text-3xl font-bold text-green-500 mr-130 px-1 py-2">
@@ -15,11 +15,10 @@ function Header() {
         <a href="#" className="hover:text-green-500 font-semibold">How It Works</a>
         <a href="#" className="hover:text-green-500 font-semibold">Community</a>
         <a href="#" className="hover:text-green-500 font-semibold">About Us</a>
-       <Login />
+       <LoginButton />
       </nav>
        
     </header>
   );
 }
-
 export default Header;
