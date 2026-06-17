@@ -101,7 +101,7 @@ function Features() {
       <div className=" rounded-2xl border bg-green-50 w-91 h-38 p-2 border-green-300">
         <h1 className="font-semibold text-xl pb-2"> Ready to make smarter food Choices?</h1>
         <p className="font-normal pb-2"> Scan your  first food and get instatnt  Nutrition Results.</p>
-        <button className="bg-green-500 rounded flex px-3 py-2 text-white font-semibold">Get Started <ArrowRight size={25} className="align-middle "></ArrowRight>
+        <button className="bg-green-500 rounded flex px-3 py-2 text-white font-semibold cursor-pointer">Get Started <ArrowRight size={25} className="align-middle "></ArrowRight>
         </button>
          </div>
 
