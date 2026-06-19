@@ -182,7 +182,41 @@ function HowItWorks() {
           </div>
 
         </div>
+       <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-6">
 
+  <div className="bg-green-50 rounded-2xl p-6 text-center border border-green-100">
+    <h3 className="text-3xl font-bold text-green-500">⚡</h3>
+    <p className="mt-3 font-semibold">Fast</p>
+    <p className="text-sm text-gray-600 mt-1">
+      Instant AI-powered food recognition.
+    </p>
+  </div>
+
+  <div className="bg-green-50 rounded-2xl p-6 text-center border border-green-100">
+    <h3 className="text-3xl font-bold text-green-500">🎯</h3>
+    <p className="mt-3 font-semibold">Accurate</p>
+    <p className="text-sm text-gray-600 mt-1">
+      Reliable nutrition and calorie analysis.
+    </p>
+  </div>
+
+  <div className="bg-green-50 rounded-2xl p-6 text-center border border-green-100">
+    <h3 className="text-3xl font-bold text-green-500">🧠</h3>
+    <p className="mt-3 font-semibold">Smart</p>
+    <p className="text-sm text-gray-600 mt-1">
+      Advanced AI understands your meals.
+    </p>
+  </div>
+
+  <div className="bg-green-50 rounded-2xl p-6 text-center border border-green-100">
+    <h3 className="text-3xl font-bold text-green-500">🔒</h3>
+    <p className="mt-3 font-semibold">Secure</p>
+    <p className="text-sm text-gray-600 mt-1">
+      Your data stays safe and protected.
+    </p>
+  </div>
+
+</div>
       </div>
     </section>
     </>
