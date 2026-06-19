@@ -1,6 +1,6 @@
 import LoginButton from "./LoginButton";
 import logo from "../assets/logo.png";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 function Header() {
   return (
 <header className="flex flex-col md:flex-row items-center justify-between px-4 sm:px-6 py-3 gap-4">
@@ -14,11 +14,11 @@ function Header() {
   
   <nav className="flex items-center gap-6 text-base">
     
-    <Link to="/" className="hover:text-green-500 font-semibold">Home</Link>
-     <Link to="/features" className="hover:text-green-500 font-semibold">Features </Link>
-    <Link to="/Works" className="hover:text-green-500 font-semibold whitespace-nowrap">How It Works</Link>
-    <Link to="/community" className="hover:text-green-500 font-semibold">Community</Link>
-    <Link to="/About" className="hover:text-green-500 font-semibold whitespace-nowrap">About Us </Link>
+    <NavLink to="/" className={({isActive}) => isActive ? "text-green-500 border-b-2 border-green-500" : "hover:text-green-500 "} >Home</NavLink>
+     <NavLink to="/features" className={({isActive}) => isActive ? "text-green-500 border-b-2 border-green-500" : "hover:text-green-500 "} >Features </NavLink>
+    <NavLink to="/Works" className={({isActive}) => isActive ? "text-green-500 border-b-2 border-green-500" : "hover:text-green-500 whitespace-nowrap"}  >How It Works</NavLink>
+    <NavLink to="/community" className={({isActive}) => isActive ? "text-green-500 border-b-2 border-green-500" : "hover:text-green-500 "} >Community</NavLink>
+    <NavLink to="/About" className={({isActive}) => isActive ? "text-green-500 border-b-2 border-green-500" : "hover:text-green-500 whitespace-nowrap "} >About Us </NavLink>
     <LoginButton />
   </nav>
 </header>

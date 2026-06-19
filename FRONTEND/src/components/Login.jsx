@@ -4,6 +4,7 @@ import food from "../assets/food.png"
 import logo from "../assets/logo.png"
 import { useState } from "react";
 import React from 'react';
+import Header from "../components/Header";
 import { Link } from "react-router-dom";
 export default function Login() {
   const navigate= useNavigate();
@@ -14,6 +15,7 @@ export default function Login() {
         });
     };
 return(
+  <>
   <div className="min-h-screen flex flex-col lg:flex-row ">
     
       
@@ -22,7 +24,7 @@ return(
     {/* bg-gradient-to-br from-green-100 via-emerald-50 to-white */}
     <div className="max-w-md mx-10 mb-35">
       <Link to="/">
-       <div className=" flex items-center gap-2 mb-10">
+       <div className=" flex items-center gap-2 mb-8">
         <img src={logo} alt="logo" className="w-6 h-6" />
         <h1 className="text-3xl font-bold text-green-500 cursor-pointer">
           PureByte
@@ -96,7 +98,7 @@ return(
 
         <div className="w-[85%] h-[85%] rounded-[50px] overflow-hidden shadow-2xl shadow-emerald-900/10 border-4 border-white">
         
-        <div className="absolute inset-0 w-96 h-96 bg-green-300/60 blur-3xl rounded-full"></div>
+        <div className="absolute inset-0 w-96 h-96 bg-green-300/55 blur-3xl rounded-full"></div>
           <img 
             src={food}
              
@@ -151,7 +153,7 @@ return(
       </div>
     </div>
       </section>
-  
-  </div>
+   </div>
+   </>
     );
   }
