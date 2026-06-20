@@ -55,7 +55,7 @@ function About() {
           </p>
         </div>
 
-        <div className="bg-green-600 text-white rounded-3xl p-8 shadow-green-300 border-green-200">
+        <div className="bg-green-600 text-white rounded-3xl p-8 shadow-lg border-green-100 ">
           <Eye className="mb-4" size={40} />
 
           <h3 className="text-3xl font-bold mb-4">
