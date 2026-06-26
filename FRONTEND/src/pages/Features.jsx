@@ -1,5 +1,6 @@
 import Header from "../components/Header"
 import {Camera,Search,Flame,Salad,Smartphone,Zap, } from "lucide-react";
+import {Link } from "react-router-dom";
 
 function Features() {
   const features = [
@@ -98,10 +99,11 @@ function Features() {
               Start your AI-powered nutrition journey with PureByte.
             </p>
           </div>
-
+          <Link to="/login">
           <button className="w-full sm:w-auto bg-white text-green-600 px-6 py-3 rounded-xl font-semibold hover:scale-105 transition">
             Try PureByte Now →
           </button>
+          </Link>
         </div>
       </div>
     </section>
@@ -110,21 +112,3 @@ function Features() {
 }
 
 export default Features;
-// function Features(){
-//     return(
-//          <>
-         
-//         <div className="min-h-screen px-4 sm:px-6 lg:px-10   md:px-10 py-12 sm:py-16 lg:py-20">
-//             <div className="max-w-4xl mx-auto">
-//          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl font-bold text-green-500">
-//             Features
-//          </h1>
-//          <p className="mt-4 text-sm sm:text-base md:text-lg  text-gray-600leading-relaxed">
-//             Discover the powerful Ai food detection features of PureByte.
-//          </p>
-//         </div>
-//         </div>
-//         </>
-//     );
-// }
-// export default Features;
