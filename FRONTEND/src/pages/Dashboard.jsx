@@ -5,7 +5,7 @@ function Dashboard(){
     return(
         <div className="text-center">
             <h1 className="font-bold text-xl">
-                User Dashboard
+                User Dashboard 
             </h1>
             <p>
                 Welcome Back, {username}!

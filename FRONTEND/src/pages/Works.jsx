@@ -1,10 +1,7 @@
 import Header from "../components/Header";
-import {
-  Camera,
-  Brain,
-  BarChart3,
-  CheckCircle,
-} from "lucide-react";
+import {Camera,Brain,BarChart3,CheckCircle,} from "lucide-react";
+import Salad from "../assets/saladImg.png";
+import Burger from "../assets/BurgerImg.png";
 
 function HowItWorks() {
   const steps = [
@@ -214,6 +211,110 @@ function HowItWorks() {
     <p className="text-sm text-gray-600 mt-1">
       Your data stays safe and protected.
     </p>
+  </div>
+
+</div>
+{/* Nutrition Insight Ex */}
+<div className="mt-24">
+
+  <div className="text-center mb-12">
+    <h2 className="text-3xl sm:text-4xl font-bold">
+      Understand Your Nutrition
+      <span className="text-green-500"> Instantly</span>
+    </h2>
+
+    <p className="text-gray-600 mt-4 max-w-2xl mx-auto">
+      PureByte not only detects food but also helps you understand
+      whether your meal is a healthy choice or should be consumed in moderation.
+    </p>
+  </div>
+
+  <div className="grid md:grid-cols-2 gap-8 ">
+
+    {/* Healthy Food Card */}
+    <div className="bg-green-50 border border-green-300 rounded-3xl p-6 hover:scale-101">
+
+      <div className="flex items-center justify-between mb-5">
+        <h3 className="text-xl font-semibold">
+          Fresh Salad 🥗
+        </h3>
+
+        <span className="bg-green-500 text-white px-4 py-2 rounded-full text-sm font-medium">
+          Healthy Choice
+        </span>
+      </div>
+
+      <img
+        src={Salad}
+        alt="Salad"
+        className=" mx-auto w-85 h-85 md:h-72  object-cover rounded-2xl "
+      />
+
+      <div className="mt-5 space-y-3">
+
+        <div className="flex justify-between">
+          <span className="font-semibold">Calories</span>
+          <span className="font-semibold">180 kcal</span>
+        </div>
+
+        <div className="flex justify-between">
+          <span className="font-semibold">Protein</span>
+          <span className="font-semibold">12g</span>
+        </div>
+
+        <div className="flex justify-between">
+          <span className="font-semibold">Fiber</span>
+          <span className="text-green-600 font-semibold">
+            High ✓
+          </span>
+        </div>
+
+      </div>
+    </div>
+
+    {/* Warning Food Card */}
+    <div className="bg-red-50 border border-red-300 rounded-3xl p-6 hover:scale-101 duration-30">
+
+      <div className="flex items-center justify-between mb-5">
+        <h3 className="text-xl font-semibold">
+          Cheeseburger 🍔
+        </h3>
+
+        <span className="bg-red-500 text-white px-4 py-2 rounded-full text-sm font-medium">
+          Consume in Moderation
+        </span>
+      </div>
+
+      <img
+        src={Burger}
+        alt="Burger"
+        className=" mx-auto  w-85 h-85 md:h-72 object-cover rounded-2xl"
+      />
+
+      <div className="mt-5 space-y-3">
+
+        <div className="flex justify-between">
+          <span>Calories</span>
+          <span className="font-semibold">850 kcal</span>
+        </div>
+
+        <div className="flex justify-between">
+          <span>Fat</span>
+          <span className="text-red-600 font-semibold">
+            High ✕
+          </span>
+        </div>
+
+        <div className="flex justify-between">
+          <span>Sodium</span>
+          <span className="text-red-600 font-semibold">
+            High ✕
+          </span>
+        </div>
+
+      </div>
+    </div>
+
   </div>
 
 </div>

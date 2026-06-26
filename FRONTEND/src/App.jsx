@@ -10,10 +10,12 @@ import FoodScanner from "./pages/foodscanner";
 import ForgotPassword from "./pages/ForgotPassword";
 import VerifyOtp from "./pages/VerifyOtp";
 import ResetPassword from "./pages/ResetPassword";
+import ShareExperience from "./pages/ShareExperience";
 function App() {
     return(
     <BrowserRouter>
      <Routes> 
+      <Route path="/shareExp" element={<ShareExperience />} />
       <Route path="/Community" element={<Community />} />
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
