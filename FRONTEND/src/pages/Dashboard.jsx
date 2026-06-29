@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { useAuthContext } from "../context/AuthContext";
 
 function Dashboard() {
@@ -18,20 +17,6 @@ function Dashboard() {
             <p className="text-sm text-slate-500">Member since</p>
             <p className="mt-2 text-lg font-medium text-slate-900">{user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : "-"}</p>
           </div>
-=======
-import { useLocation } from "react-router-dom";
-function Dashboard(){
-    const location=useLocation();
-    const username = location.state?.username || "User";
-    return(
-        <div className="text-center">
-            <h1 className="font-bold text-xl">
-                User Dashboard 
-            </h1>
-            <p>
-                Welcome Back, {username}!
-            </p>
->>>>>>> 8d9cf23aa8ee14c6c1742a04481996e6815dc60b
         </div>
       </div>
     </div>

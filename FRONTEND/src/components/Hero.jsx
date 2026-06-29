@@ -1,3 +1,4 @@
+
 import { ArrowRight, ScanLine } from "lucide-react";
 import mobile from "../assets/mobile.png";
 import {Link} from "react-router-dom"
