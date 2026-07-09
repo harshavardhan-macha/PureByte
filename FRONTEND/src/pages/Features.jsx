@@ -100,7 +100,7 @@ function Features() {
             </p>
           </div>
           <Link to="/login">
-          <button className="w-full sm:w-auto bg-white text-green-600 px-6 py-3 rounded-xl font-semibold hover:scale-105 transition">
+          <button className="w-full min-h-11 rounded-xl bg-white px-6 py-3 text-sm font-semibold text-green-600 transition hover:scale-105 sm:w-auto sm:text-base">
             Try PureByte Now →
           </button>
           </Link>

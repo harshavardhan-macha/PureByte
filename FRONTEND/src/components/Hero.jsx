@@ -1,51 +1,58 @@
 
 import { ArrowRight, ScanLine } from "lucide-react";
 import mobile from "../assets/mobile.png";
-import {Link} from "react-router-dom"
+import { Link } from "react-router-dom";
+
 function Hero() {
-
   return (
-    <section className="  flex items-center justify-between px-6 py-2 ">
+    <section className="mx-auto flex w-full max-w-7xl flex-col items-center gap-8 px-4 py-10 sm:px-6 sm:py-12 lg:flex-row lg:items-center lg:justify-between lg:gap-12 lg:px-8 lg:py-16">
+      <div className="w-full max-w-xl text-center lg:text-left">
+        <p className="text-sm font-semibold text-green-500 sm:text-base">
+          AI Powered Food Quality Detection
+        </p>
 
-    <div className=" min-h-screen flex flex-col min-h-screen px-6 py-45 ">
-      <p className="text-green-500 font-semibold px-10">
-        AI Powered Food Quality Detection
-      </p>
+        <h1 className="mt-4 text-3xl font-bold leading-tight sm:text-4xl md:text-5xl lg:text-[clamp(2.25rem,4vw,3.5rem)]">
+          Eat Smart,
+          <br />
+          <span className="text-green-500">Live Better.</span>
+        </h1>
 
-      <h1 className="text-5xl font-bold mt-4  px-10">
-        Eat Smart,
-        <br />
-        <h1 className="text-green-500"> Live Better.</h1>
-      </h1>
+        <p className="mt-4 max-w-xl text-sm text-slate-600 sm:text-base">
+          PureByte helps you analyze food quality and nutritional value
+          using AI technology.
+        </p>
 
-      <p className="mt-4 max-w-xl px-10 ">
-        PureByte helps you analyze food quality and nutritional value
-        using AI technology.
-      </p>
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-center lg:justify-start">
+          <Link to="/login" className="w-full sm:w-auto">
+            <button
+              type="button"
+              className="flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-green-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-green-700 sm:w-auto sm:text-base"
+            >
+              <ScanLine size={20} />
+              Scan your food
+            </button>
+          </Link>
 
-      <div className="mt-6 flex gap-4 px-10">
-        <Link to="/login">
-        <button className="flex items-center gap-2 bg-green-600 text-white px-5 py-3 rounded-full cursor-pointer hover:bg-green-700 transition">
-        <ScanLine size={20} />
-        Scan your food
-        </button>
-      </Link>
-        
-        <Link to="/features">
-        <button className=" flex items-center gap-2 bg-white text-green-600 border border-green-600 cursor-pointer hover:bg-green-50 transition px-5 py-3 rounded-full">
-          
-          Explore Features
-          <ArrowRight size={18}/>
-        </button>
-        </Link>
+          <Link to="/features" className="w-full sm:w-auto">
+            <button
+              type="button"
+              className="flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-green-600 bg-white px-5 py-3 text-sm font-semibold text-green-600 transition hover:bg-green-50 sm:w-auto sm:text-base"
+            >
+              Explore Features
+              <ArrowRight size={18} />
+            </button>
+          </Link>
         </div>
-  </div>
-        <div className="pt-1 pb-12 flex gap-100">
-        <img src={mobile} alt="mobile" className="w-150 h-150"/>
-        </div>
-       
+      </div>
+
+      <div className="flex w-full max-w-xs justify-center sm:max-w-sm lg:max-w-md lg:flex-shrink-0">
+        <img
+          src={mobile}
+          alt="PureByte mobile app preview"
+          className="h-auto w-full max-w-[240px] object-contain sm:max-w-[280px] md:max-w-[320px] lg:max-w-[380px]"
+        />
+      </div>
     </section>
-  
   );
 }
 
