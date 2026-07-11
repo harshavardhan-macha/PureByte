@@ -9,6 +9,7 @@ import Features from "./pages/Features";
 import Community from "./pages/Community";
 import About from "./pages/About";
 import Works from "./pages/Works";
+import ShareExperience from "./pages/ShareExperience";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route element={<PrivateRoute />}>
             <Route path="/dashboard" element={<Dashboard />} />
           </Route>
+          <Route path="/shareExp" element={<ShareExperience />} />
           <Route path="/features" element={<Features />} />
           <Route path="/About" element={<About />} />
           <Route path="/Works" element={<Works />} />
