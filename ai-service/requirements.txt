@@ -1,8 +1,0 @@
-fastapi
-uvicorn[standard]
-python-multipart
-pydantic
-numpy
-opencv-python-headless
-pillow
-rapidocr-onnxruntime

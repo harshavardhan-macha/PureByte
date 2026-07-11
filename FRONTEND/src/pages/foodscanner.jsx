@@ -66,7 +66,7 @@ function FoodScanner() {
       {/* Capture Button */}
       <button
         onClick={capturePhoto}
-        className="mt-6 px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600"
+        className="mt-6 min-h-11 rounded-lg bg-green-500 px-6 py-3 text-base font-semibold text-white hover:bg-green-600"
       >
         Capture Food
       </button>

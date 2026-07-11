@@ -7,41 +7,40 @@ function Community(){
    <>
     <div className="sm:h-10  h-8 bg-gradient-to-b from-green-200 via-green-100 to-white blur-sm opacity-80"></div>
         <Header />
-    <div className="max-w-7xl mx-auto px-6 py-12">
+    <div className="mx-auto max-w-7xl overflow-x-hidden px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
 
       {/* Hero Section */}
-      <div className="grid lg:grid-cols-2 gap-10 items-center mb-12">
+      <div className="mb-10 grid items-center gap-8 lg:grid-cols-2 lg:mb-12 lg:gap-10">
         <div>
-          <span className="bg-green-100 text-green-600 px-4 py-1 rounded-full font-semibold text-sm">
+          <span className="inline-block rounded-full bg-green-100 px-4 py-1 text-sm font-semibold text-green-600">
             COMMUNITY
           </span>
 
-          <h1 className="text-5xl font-bold mt-4">
+          <h1 className="mt-4 text-3xl font-bold sm:text-4xl lg:text-5xl">
             Join the PureByte
-            <span className="text-green-500 block">Community</span>
+            <span className="block text-green-500">Community</span>
           </h1>
 
-          <p className="text-gray-600 mt-4 text-lg">
+          <p className="mt-4 text-base text-gray-600 sm:text-lg">
             Connect with food lovers, share your journey,
             and build healthier habits together.
           </p>
         </div>
-        <div className="relative flex justify-center items-center">
-       <img
-            src={ com }
+        <div className="relative flex items-center justify-center">
+          <img
+            src={com}
             alt="community"
-            className=" w-full h-full object-cover"
+            className="h-auto w-full max-w-md object-contain lg:max-w-lg"
           />
-        
         </div>
       </div>
 
       {/* Stats */}
-      <div className="grid md:grid-cols-4 gap-6 mb-16">
+      <div className="mb-12 grid grid-cols-1 gap-4 sm:mb-16 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
 
-        <div className="bg-white border rounded-2xl p-8 text-center shadow-lg  border-green-200">
-          <Users className="mx-auto text-green-500 mb-3" size={34} />
-          <h2 className="text-4xl font-bold text-green-500">15K+</h2>
+        <div className="rounded-2xl border border-green-200 bg-white p-6 text-center shadow-lg sm:p-8">
+          <Users className="mx-auto mb-3 text-green-500" size={34} />
+          <h2 className="text-3xl font-bold text-green-500 sm:text-4xl">15K+</h2>
           <p className="text-gray-500 mt-2">Active Members</p>
         </div>
 
@@ -67,8 +66,8 @@ function Community(){
       
     <div className="mt-16">
 
-  <div className="text-center mb-12">
-    <h2 className="text-3xl font-bold">
+  <div className="text-center mb-8 sm:mb-12">
+    <h2 className="text-2xl font-bold sm:text-3xl">
       What Our Users Say
     </h2>
 
@@ -78,7 +77,7 @@ function Community(){
     </p>
   </div>
 
-  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+  <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
 
     {/* Card 1 */}
     <div className="bg-white border border-green-100 rounded-3xl p-6 shadow-sm hover:shadow-lg transition">
@@ -165,7 +164,7 @@ function Community(){
   {/* Share Experience CTA */}
   <div className="mt-14 text-center">
 
-    <h3 className="text-2xl font-bold">
+    <h3 className="text-xl font-bold sm:text-2xl">
       Want to Share Your Experience?
     </h3>
 
@@ -176,7 +175,7 @@ function Community(){
     <div className="mt-3">
   <Link
     to="/shareExp"
-    className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-xl font-semibold transition"
+    className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-green-500 px-6 py-3 font-semibold text-white transition hover:bg-green-600 sm:w-auto sm:px-8"
   >
     Share Your Experience
     <ArrowRight size={18} />
