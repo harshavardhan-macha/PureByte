@@ -30,8 +30,7 @@ export default function ScanResults({ result, onClose }) {
   const [displayScore, setDisplayScore] = useState(0);
   const [bookmarked, setBookmarked] = useState(false);
   const [expanded, setExpanded] = useState({});
-  const verdict = useMemo(() => verdictMeta(safetyScore), [safetyScore]);
-
+  
   const {
     productName,
     safetyScore = 0,
@@ -42,6 +41,7 @@ export default function ScanResults({ result, onClose }) {
     totalIngredientsParsed = 0,
     createdAt,
   } = result || {};
+  const verdict = useMemo(() => verdictMeta(safetyScore), [safetyScore]);
 
   useEffect(() => {
     let start = 0;
