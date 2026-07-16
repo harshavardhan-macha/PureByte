@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import axios from "../utils/axiosInstance";
+import axios, { resetSessionExpiredFlag } from "../utils/axiosInstance";
+import { resetMlSessionExpiredFlag } from "../lib/mlApi";
 
 const AuthContext = createContext();
 
@@ -8,6 +9,9 @@ const getStoredToken = () => {
 };
 
 const saveToken = (token, remember) => {
+  resetSessionExpiredFlag();
+  resetMlSessionExpiredFlag();
+
   if (remember) {
     localStorage.setItem("token", token);
     sessionStorage.removeItem("token");
@@ -26,11 +30,13 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [authLoading, setAuthLoading] = useState(false);
+  const [serverError, setServerError] = useState(false);
 
   const logout = () => {
     clearToken();
     setUser(null);
     setLoading(false);
+    setServerError(false);
   };
 
   useEffect(() => {
@@ -50,9 +56,15 @@ export const AuthProvider = ({ children }) => {
       try {
         const { data } = await axios.get("/auth/me");
         setUser(data.user);
+        setServerError(false);
       } catch (error) {
-        clearToken();
-        setUser(null);
+        // Only clear session on actual 401 — network/500 errors should not log the user out
+        if (error.response?.status === 401) {
+          clearToken();
+          setUser(null);
+        } else {
+          setServerError(true);
+        }
       } finally {
         setLoading(false);
       }
@@ -100,12 +112,13 @@ export const AuthProvider = ({ children }) => {
       user,
       loading,
       authLoading,
+      serverError,
       login,
       register,
       logout,
       isAuthenticated: Boolean(user),
     }),
-    [user, loading, authLoading],
+    [user, loading, authLoading, serverError],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

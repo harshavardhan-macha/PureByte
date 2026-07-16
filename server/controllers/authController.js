@@ -65,7 +65,14 @@ export const login = async (req, res) => {
 
 export const getMe = async (req, res) => {
   try {
-    res.status(200).json({ user: req.user });
+    res.status(200).json({
+      user: {
+        id: req.user._id,
+        name: req.user.name,
+        email: req.user.email,
+        createdAt: req.user.createdAt,
+      },
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });
