@@ -30,6 +30,10 @@ def on_startup():
     ensure_indexes()
 
 
+@app.get("/")
+def root():
+    return {"status": "ok", "message": "Purebyte API is running"}
+
 @app.get("/health")
 def health():
     return {"status": "ok"}
