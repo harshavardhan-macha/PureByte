@@ -76,16 +76,19 @@ export default function IngredientsPage() {
           Browse flagged additives and common concerns.
         </p>
 
-        <div className="relative mt-5">
-          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "var(--dash-text-muted)" }} />
-          <input
-            type="search"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search by name or alias…"
-            className="field pl-10"
-          />
-        </div>
+        <div className="relative mt-5 w-full max-w-md">
+  <Search 
+    size={18} 
+    className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--dash-text-muted)] pointer-events-none" 
+  />
+  <input
+    type="search"
+    value={query}
+    onChange={(e) => setQuery(e.target.value)}
+    placeholder="Search by name or alias…"
+    className="w-full rounded-xl border border-gray-200 py-3 pl-12 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--dash-accent)] transition-all bg-[var(--dash-bg-surface)] text-[var(--dash-text)]"
+  />
+</div>
 
         <div className="mt-3 flex flex-wrap gap-2">
         {[
@@ -127,7 +130,7 @@ export default function IngredientsPage() {
           {items.map((item) => {
             const sev = getEffectiveSeverity(item);
             return (
-            <li key={item.name}>
+            <li key={item.code || item.name}>
               <div
                 onClick={() => openDetail(item.name)}
                 className="group flex w-full items-center gap-3 rounded-2xl border border-[var(--dash-border)] bg-[var(--dash-surface)] px-4 py-3 text-left transition hover:-translate-y-0.5 hover:shadow-sm"

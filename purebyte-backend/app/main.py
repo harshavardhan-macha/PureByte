@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import ALLOWED_ORIGINS
 from app.database import ensure_indexes
-from app.routes import analyze, history, ingredients
+from app.routes import analyze, history, ingredients, community
 
 app = FastAPI(
     title="PureByte ML/API Service",
@@ -23,6 +23,7 @@ app.add_middleware(
 app.include_router(analyze.router)
 app.include_router(history.router)
 app.include_router(ingredients.router)
+app.include_router(community.router)
 
 
 @app.on_event("startup")

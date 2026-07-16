@@ -1,6 +1,7 @@
 import Header from "../components/Header";
 import { Target, Eye, Lightbulb, CheckCircle, Heart, Users, ArrowRight,} from "lucide-react";
 import abt from "../assets/abt.png";
+import cspPic from "../assets/csp.jpeg"
 function About() {
   return (
     <>
@@ -25,14 +26,23 @@ function About() {
             accessible to everyone using the power of AI.
           </p>
         </div>
+<div className="relative flex flex-col items-center justify-center gap-4 px-2 py-4 sm:flex-row sm:items-stretch sm:gap-6 sm:px-0 sm:py-6 lg:gap-8 lg:py-8">
+  <div className="group relative w-full max-w-[280px] overflow-hidden rounded-[1.75rem] border border-green-100 bg-white p-2 shadow-[0_20px_45px_-20px_rgba(16,185,129,0.35)] sm:max-w-[300px] lg:max-w-[340px]">
+    <img
+      src={abt}
+      alt="Food Bowl"
+      className="h-64 w-full rounded-[1.25rem] object-cover object-center transition duration-500 group-hover:scale-105 sm:h-72 lg:h-80"
+    />
+  </div>
 
-        <div className="relative flex justify-center">
-          <img
-            src={abt}
-            alt="Food Bowl"
-            className="relative z-10 h-auto w-full max-w-xs object-contain sm:max-w-sm md:max-w-md lg:max-w-lg"
-          />
-        </div>
+  <div className="group relative w-full max-w-[280px] overflow-hidden rounded-[1.75rem] border border-green-100 bg-white p-2 shadow-[0_20px_45px_-20px_rgba(16,185,129,0.35)] sm:max-w-[300px] lg:max-w-[340px]">
+    <img
+      src={cspPic}
+      alt="TeamWork"
+      className="h-64 w-full rounded-[1.25rem] object-cover object-center transition duration-500 group-hover:scale-105 sm:h-72 lg:h-80"
+    />
+  </div>
+</div>
 
       </div>
 
@@ -146,29 +156,45 @@ function About() {
 
           <div className="p-5 text-center">
             <h4 className="font-bold text-xl">
-              Arjun Kumar
+              Harsha vardhan
             </h4>
 
             <p className="text-green-500 mt-2">
-              Developer
+              Model integration Engineer
             </p>
           </div>
         </div>
-
         <div className="border rounded-2xl overflow-hidden shadow-sm">
           <img
             src="/member2.png"
             alt=""
             className="w-full h-64 object-cover"
           />
-
+          
           <div className="p-5 text-center">
             <h4 className="font-bold text-xl">
-              Neha Sharma
+              pavan 
             </h4>
 
             <p className="text-green-500 mt-2">
-              AI Engineer
+              Datasets collector 
+            </p>
+          </div>
+        </div>
+        <div className="border rounded-2xl overflow-hidden shadow-sm">
+          <img
+            src="/member2.png"
+            alt=""
+            className="w-full h-64 object-cover"
+          />
+          
+          <div className="p-5 text-center">
+            <h4 className="font-bold text-xl">
+              Komali
+            </h4>
+
+            <p className="text-green-500 mt-2">
+              Database Engineer
             </p>
           </div>
         </div>
@@ -182,11 +208,28 @@ function About() {
 
           <div className="p-5 text-center">
             <h4 className="font-bold text-xl">
-              Rahul Verma
+              Alekya
             </h4>
 
             <p className="text-green-500 mt-2">
               UI/UX Designer
+            </p>
+          </div>
+        </div>
+        <div className="border rounded-2xl overflow-hidden shadow-sm">
+          <img
+            src="/member2.png"
+            alt=""
+            className="w-full h-64 object-cover"
+          />
+          
+          <div className="p-5 text-center">
+            <h4 className="font-bold text-xl">
+              Vasanthi 
+            </h4>
+
+            <p className="text-green-500 mt-2">
+              Backend Developer 
             </p>
           </div>
         </div>
@@ -203,13 +246,13 @@ function About() {
           </h2>
         </div>
 
-        <button
-          type="button"
-          className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-white px-6 py-3 font-semibold text-green-600 sm:w-auto sm:px-8 sm:py-4"
+        <a
+          href="/login"
+          className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl  px-6 py-3 font-semibold text-green-600 transition  sm:w-auto sm:px-8 sm:py-4"
         >
           Get Started with PureByte
           <ArrowRight size={20} />
-        </button>
+        </a>
 
       </div>
 

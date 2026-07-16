@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Post from "../models/Post.js";
 import Comment from "../models/Comment.js";
 import User from "../models/User.js";
@@ -9,6 +10,26 @@ const formatUser = (user) => {
     name: user.name,
     email: user.email,
   };
+};
+
+export const getCommunityStats = async (_req, res) => {
+  try {
+    const [activeMembers, sharedExperiences, scansCount] = await Promise.all([
+      User.countDocuments(),
+      Post.countDocuments(),
+      mongoose.connection.db?.collection("scans").countDocuments() || 0,
+    ]);
+
+    res.json({
+      activeMembers,
+      foodsDetected: scansCount,
+      mealsAnalyzed: scansCount,
+      sharedExperiences,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Could not load community stats" });
+  }
 };
 
 const enrichPost = async (post, currentUserId) => {

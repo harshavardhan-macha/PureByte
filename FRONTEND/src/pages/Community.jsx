@@ -1,8 +1,50 @@
+import { useEffect, useState } from "react";
 import Header from "../components/Header";
 import {Users,Leaf,Star,Trophy,ArrowRight,} from "lucide-react";
 import {Link} from "react-router-dom";
 import com from "../assets/com.png";
+import { getCommunityStats } from "../lib/communityApi";
+
 function Community(){
+  const [stats, setStats] = useState({
+    activeMembers: 0,
+    foodsDetected: 0,
+    mealsAnalyzed: 0,
+    sharedExperiences: 0,
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadStats = async () => {
+      try {
+        const response = await getCommunityStats();
+        if (isMounted && response?.data) {
+          setStats(response.data);
+        }
+      } catch (error) {
+        console.error("Failed to load community stats", error);
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    loadStats();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const formatNumber = (value) => {
+    if (value >= 1000000) return `${(value / 1000000).toFixed(value % 1000000 === 0 ? 0 : 1)}M+`;
+    if (value >= 1000) return `${(value / 1000).toFixed(value % 1000 === 0 ? 0 : 1)}K+`;
+    return `${value}+`;
+  };
+
   return (
    <>
     <div className="sm:h-10  h-8 bg-gradient-to-b from-green-200 via-green-100 to-white blur-sm opacity-80"></div>
@@ -40,26 +82,26 @@ function Community(){
 
         <div className="rounded-2xl border border-green-200 bg-white p-6 text-center shadow-lg sm:p-8">
           <Users className="mx-auto mb-3 text-green-500" size={34} />
-          <h2 className="text-3xl font-bold text-green-500 sm:text-4xl">15K+</h2>
+          <h2 className="text-3xl font-bold text-green-500 sm:text-4xl">{loading ? "--" : formatNumber(stats.activeMembers)}</h2>
           <p className="text-gray-500 mt-2">Active Members</p>
         </div>
 
         <div className="bg-white border rounded-2xl p-8 text-center shadow-lg border-green-200">
           <Leaf className="mx-auto text-green-500 mb-3" size={34} />
-          <h2 className="text-4xl font-bold text-green-500">2.5M+</h2>
+          <h2 className="text-4xl font-bold text-green-500">{loading ? "--" : formatNumber(stats.foodsDetected)}</h2>
           <p className="text-gray-500 mt-2">Foods Detected</p>
         </div>
 
         <div className="bg-white border rounded-2xl p-8 text-center shadow-lg  border-green-200">
           <Star className="mx-auto text-green-500 mb-3" size={34} />
-          <h2 className="text-4xl font-bold text-green-500">1.2M+</h2>
+          <h2 className="text-4xl font-bold text-green-500">{loading ? "--" : formatNumber(stats.mealsAnalyzed)}</h2>
           <p className="text-gray-500 mt-2">Meals Analyzed</p>
         </div>
 
         <div className="bg-white border rounded-2xl p-8 text-center shadow-lg  border-green-200">
           <Trophy className="mx-auto text-green-500 mb-3" size={34} />
-          <h2 className="text-4xl font-bold text-green-500">8K+</h2>
-          <p className="text-gray-500 mt-2">Challenges Completed</p>
+          <h2 className="text-4xl font-bold text-green-500">{loading ? "--" : formatNumber(stats.sharedExperiences)}</h2>
+          <p className="text-gray-500 mt-2">Shared Experiences</p>
         </div>
 
       </div>

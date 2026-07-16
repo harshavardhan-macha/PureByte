@@ -135,7 +135,7 @@ export default function CommunityPostCard({ post, onLikeUpdate }) {
         alt={post.caption || "Community post"}
         className="aspect-square w-full object-cover"
         loading="lazy"
-      />
+      />  
 
       <div className="px-4 py-3">
         <div className="flex items-center gap-4">
