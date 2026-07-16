@@ -10,17 +10,20 @@
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-size: 16px;
 
-  /* Dashboard theme tokens — scoped via .dashboard-theme, not used on landing page */
-  --dash-bg: #f2fcf6; /* lighter green background than #eefbf3 */
-  --dash-surface: #ffffff;
-  --dash-surface-muted: #f8fdfa; /* lighter green surface */
-  --dash-nav-bg: #eafaf1; /* lighter green nav */
-  --dash-accent: #065f46; /* keeps high-contrast dark green accent for accessibility */
-  --dash-accent-hover: #044e39;
-  --dash-accent-soft: #e1fbec;
-  --dash-border: rgba(6, 95, 70, 0.08); /* softer green borders */
-  --dash-text: #0f172a;
-  --dash-text-muted: #64748b;
+  --dash-bg: #f6f3e8;
+  --dash-surface: #fffdf8;
+  --dash-surface-muted: #f4efe2;
+  --dash-nav-bg: #f0eadc;
+  --dash-accent: #137a4a;
+  --dash-accent-hover: #0d5e3a;
+  --dash-accent-soft: #dff2e4;
+  --dash-border: rgba(19, 122, 74, 0.16);
+  --dash-text: #172033;
+  --dash-text-muted: #5f6979;
+  --dash-danger: #d14343;
+  --dash-warning: #b97316;
+  --dash-success: #197b45;
+  --dash-neutral: #6b7280;
 }
 
 html,
@@ -31,8 +34,8 @@ body {
 
 body {
   overflow-x: hidden;
-  background-color: #f8fafc;
-  color: #0f172a;
+  background-color: var(--dash-bg);
+  color: var(--dash-text);
 }
 
 .dashboard-theme {
@@ -57,6 +60,118 @@ select {
 a {
   color: inherit;
   text-decoration: none;
+}
+
+.app-shell {
+  background-color: var(--dash-bg);
+}
+
+.page-card {
+  background-color: var(--dash-surface);
+  border: 1px solid var(--dash-border);
+  border-radius: 1.25rem;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
+}
+
+.panel {
+  background-color: var(--dash-surface);
+  border: 1px solid var(--dash-border);
+  border-radius: 1rem;
+}
+
+.field {
+  width: 100%;
+  min-height: 2.75rem;
+  border-radius: 0.9rem;
+  border: 1px solid var(--dash-border);
+  background-color: var(--dash-surface);
+  color: var(--dash-text);
+  padding: 0.75rem 0.95rem;
+  transition: border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+}
+
+.field:focus {
+  outline: none;
+  border-color: var(--dash-accent);
+  box-shadow: 0 0 0 4px rgba(19, 122, 74, 0.12);
+}
+
+.field[aria-invalid='true'] {
+  border-color: var(--dash-danger);
+  box-shadow: 0 0 0 4px rgba(209, 67, 67, 0.12);
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  border-radius: 0.9rem;
+  border: 1px solid transparent;
+  background-color: var(--dash-accent);
+  color: white;
+  font-weight: 600;
+  padding: 0.7rem 1rem;
+  transition: background-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--dash-accent-hover);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  border-radius: 0.9rem;
+  border: 1px solid var(--dash-border);
+  background-color: var(--dash-surface);
+  color: var(--dash-text);
+  font-weight: 600;
+  padding: 0.7rem 1rem;
+  transition: background-color 180ms ease, border-color 180ms ease;
+}
+
+.btn-secondary:hover {
+  background-color: var(--dash-surface-muted);
+}
+
+.pill {
+  border-radius: 999px;
+  border: 1px solid var(--dash-border);
+  background-color: var(--dash-surface);
+  color: var(--dash-text-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.4rem 0.75rem;
+}
+
+.pill-active {
+  border-color: transparent;
+  background-color: var(--dash-accent);
+  color: white;
+}
+
+.badge-danger {
+  border: 1px solid rgba(209, 67, 67, 0.2);
+  background-color: rgba(209, 67, 67, 0.1);
+  color: var(--dash-danger);
+}
+
+.badge-warning {
+  border: 1px solid rgba(185, 115, 22, 0.2);
+  background-color: rgba(185, 115, 22, 0.1);
+  color: var(--dash-warning);
+}
+
+.badge-success {
+  border: 1px solid rgba(25, 123, 69, 0.2);
+  background-color: rgba(25, 123, 69, 0.1);
+  color: var(--dash-success);
 }
 
 @layer base {

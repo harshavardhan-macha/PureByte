@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
-import { Plus, Users, Loader2 } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { Plus, Users, Loader2, Sparkles } from "lucide-react";
 import CommunityPostCard from "../../components/dashboard/CommunityPostCard";
 import CreatePostModal from "../../components/dashboard/CreatePostModal";
 import {
@@ -42,6 +42,7 @@ export default function CommunityPage() {
   const [error, setError] = useState("");
   const [composerOpen, setComposerOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [draftHasContent, setDraftHasContent] = useState(false);
 
   const loadPosts = useCallback(async () => {
     setLoading(true);
@@ -71,6 +72,7 @@ export default function CommunityPage() {
       const { data } = await createCommunityPost(file, caption);
       setPosts((prev) => [data, ...prev]);
       setComposerOpen(false);
+      setDraftHasContent(false);
       showSuccess("Post shared");
     } catch (err) {
       showError(getApiErrorMessage(err, "Could not share post. Please try again."));
@@ -89,38 +91,41 @@ export default function CommunityPage() {
     );
   };
 
+  const feedSummary = useMemo(() => {
+    if (!posts.length) return "Be the first to share a product photo.";
+    return `${posts.length} community update${posts.length === 1 ? "" : "s"} ready to explore.`;
+  }, [posts.length]);
+
   return (
     <div>
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold" style={{ color: "var(--dash-text)" }}>
-            Community
-          </h1>
-          <p className="mt-1 text-sm" style={{ color: "var(--dash-text-muted)" }}>
-            Share product photos and ingredient safety tips.
-          </p>
+      <div className="page-card p-6 sm:p-7">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold" style={{ color: "var(--dash-text)" }}>
+              Community
+            </h1>
+            <p className="mt-1 text-sm" style={{ color: "var(--dash-text-muted)" }}>
+              Share product photos and ingredient safety tips.
+            </p>
+            <p className="mt-2 inline-flex items-center gap-2 rounded-full border border-[var(--dash-border)] bg-[var(--dash-surface-muted)] px-3 py-1 text-xs font-medium" style={{ color: "var(--dash-text-muted)" }}>
+              <Sparkles size={14} style={{ color: "var(--dash-accent)" }} />
+              {feedSummary}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setComposerOpen(true)}
+            className="btn-primary shrink-0"
+          >
+            <Plus size={18} />
+            Create post
+          </button>
         </div>
-        <button
-          type="button"
-          onClick={() => setComposerOpen(true)}
-          className="inline-flex shrink-0 items-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-semibold text-white transition hover:opacity-90"
-          style={{ backgroundColor: "var(--dash-accent)" }}
-        >
-          <Plus size={18} />
-          Create post
-        </button>
       </div>
 
       {error && !loading && (
-        <div
-          className="mt-6 rounded-xl border px-4 py-4 text-sm"
-          style={{
-            borderColor: "var(--dash-border)",
-            backgroundColor: "var(--dash-surface-muted)",
-            color: "var(--dash-text)",
-          }}
-        >
-          <p className="font-medium">Couldn't load community posts</p>
+        <div className="mt-6 rounded-2xl border border-[var(--dash-border)] bg-[var(--dash-surface)] px-4 py-4 text-sm">
+          <p className="font-medium" style={{ color: "var(--dash-text)" }}>Couldn't load community posts</p>
           <p className="mt-1" style={{ color: "var(--dash-text-muted)" }}>{error}</p>
           <button
             type="button"
@@ -139,8 +144,8 @@ export default function CommunityPage() {
         </div>
       ) : !error && posts.length === 0 ? (
         <div
-          className="mt-10 flex flex-col items-center rounded-xl border border-dashed px-6 py-14 text-center"
-          style={{ borderColor: "var(--dash-accent-soft)", backgroundColor: "var(--dash-surface)" }}
+          className="mt-6 flex flex-col items-center rounded-2xl border border-dashed px-6 py-14 text-center"
+          style={{ borderColor: "var(--dash-border)", backgroundColor: "var(--dash-surface)" }}
         >
           <Users size={32} style={{ color: "var(--dash-accent)", opacity: 0.5 }} />
           <p className="mt-3 font-medium" style={{ color: "var(--dash-text)" }}>
@@ -152,8 +157,7 @@ export default function CommunityPage() {
           <button
             type="button"
             onClick={() => setComposerOpen(true)}
-            className="mt-5 inline-flex items-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-semibold text-white"
-            style={{ backgroundColor: "var(--dash-accent)" }}
+            className="btn-primary mt-5"
           >
             <Plus size={16} />
             Create the first post
@@ -171,9 +175,14 @@ export default function CommunityPage() {
 
       <CreatePostModal
         open={composerOpen}
-        onClose={() => setComposerOpen(false)}
+        onClose={() => {
+          setComposerOpen(false);
+          setDraftHasContent(false);
+        }}
         onSubmit={handleCreatePost}
         submitting={submitting}
+        draftHasContent={draftHasContent}
+        onDraftChange={setDraftHasContent}
       />
     </div>
   );

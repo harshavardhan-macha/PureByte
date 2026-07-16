@@ -11,7 +11,7 @@ const TABS = [
 const inputClass =
   "w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-slate-900 placeholder:text-slate-400 focus:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-600/20";
 
-export default function CreatePostModal({ open, onClose, onSubmit, submitting }) {
+export default function CreatePostModal({ open, onClose, onSubmit, submitting, draftHasContent, onDraftChange }) {
   const [mode, setMode] = useState("camera");
   const [caption, setCaption] = useState("");
   
@@ -113,6 +113,7 @@ export default function CreatePostModal({ open, onClose, onSubmit, submitting })
     setCapturedPreview(null);
     setUploadFile(null);
     setUploadPreview(null);
+    onDraftChange?.(false);
     onClose();
   };
 
@@ -142,6 +143,13 @@ export default function CreatePostModal({ open, onClose, onSubmit, submitting })
     await onSubmit(fileToSend, caption.trim());
     resetAndClose();
   };
+
+  const handleCaptionChange = (value) => {
+    setCaption(value);
+    onDraftChange?.(Boolean(value.trim()) || Boolean(capturedBlob || uploadFile));
+  };
+
+  const isReady = Boolean(caption.trim()) && Boolean(capturedBlob || uploadFile);
 
   if (!open) return null;
 
@@ -272,7 +280,7 @@ export default function CreatePostModal({ open, onClose, onSubmit, submitting })
             <textarea
               rows={3}
               value={caption}
-              onChange={(e) => setCaption(e.target.value)}
+              onChange={(e) => handleCaptionChange(e.target.value)}
               placeholder="What do you think of this product's ingredients?..."
               className={`${inputClass} resize-y`}
               style={{ borderColor: "var(--dash-border)" }}
@@ -281,9 +289,8 @@ export default function CreatePostModal({ open, onClose, onSubmit, submitting })
 
           <button
             type="submit"
-            disabled={submitting}
-            className="flex w-full items-center justify-center gap-2 rounded-xl py-3 text-base font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
-            style={{ backgroundColor: "var(--dash-accent)" }}
+            disabled={submitting || !isReady}
+            className="btn-primary w-full"
           >
             {submitting ? (
               <>

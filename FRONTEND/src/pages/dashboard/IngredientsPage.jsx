@@ -4,15 +4,15 @@ import IngredientDetail from "../../components/dashboard/IngredientDetail";
 import { searchIngredients, getIngredient, getErrorMessage } from "../../lib/mlApi";
 
 const severityDot = {
-  high: "bg-red-500",
-  medium: "bg-amber-500",
-  low: "bg-yellow-400",
+  high: "bg-[var(--dash-danger)]",
+  medium: "bg-[var(--dash-warning)]",
+  low: "bg-[var(--dash-success)]",
 };
 
 const severityLabelColor = {
-  high: "text-red-700 bg-red-50 border-red-100",
-  medium: "text-amber-700 bg-amber-50 border-amber-100",
-  low: "text-yellow-700 bg-yellow-50 border-yellow-100",
+  high: "badge-danger",
+  medium: "badge-warning",
+  low: "badge-success",
 };
 
 function useDebouncedValue(value, delay = 300) {
@@ -65,24 +65,24 @@ export default function IngredientsPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-slate-900">Ingredients database</h1>
-      <p className="mt-1 text-sm text-slate-500">
-        Browse flagged additives and common concerns.
-      </p>
+      <div className="page-card p-6 sm:p-7">
+        <h1 className="text-2xl font-bold" style={{ color: "var(--dash-text)" }}>Ingredients database</h1>
+        <p className="mt-1 text-sm" style={{ color: "var(--dash-text-muted)" }}>
+          Browse flagged additives and common concerns.
+        </p>
 
-      <div className="relative mt-6">
-        <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-        <input
-          type="search"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search by name or alias…"
-          className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-slate-900 placeholder:text-slate-400 focus:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-600/20"
-        />
-      </div>
+        <div className="relative mt-5">
+          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "var(--dash-text-muted)" }} />
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search by name or alias…"
+            className="field pl-10"
+          />
+        </div>
 
-      {/* Filter Chips */}
-      <div className="mt-3 flex flex-wrap gap-2">
+        <div className="mt-3 flex flex-wrap gap-2">
         {[
           { id: "", label: "All Risk Levels" },
           { id: "high", label: "High Risk" },
@@ -95,11 +95,7 @@ export default function IngredientsPage() {
               key={chip.id}
               type="button"
               onClick={() => setSeverityFilter(chip.id)}
-              className={`rounded-xl border px-3 py-1.5 text-xs font-semibold transition hover:opacity-90 select-none ${
-                isActive
-                  ? "bg-emerald-800 text-white border-emerald-800"
-                  : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
-              }`}
+              className={`pill ${isActive ? "pill-active" : ""}`}
             >
               {chip.label}
             </button>
@@ -107,35 +103,37 @@ export default function IngredientsPage() {
         })}
       </div>
 
+      </div>
+
       {error && (
-        <div className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="mt-4 rounded-xl border border-[var(--dash-danger)]/20 bg-[rgba(209,67,67,0.08)] px-4 py-3 text-sm text-[var(--dash-danger)]">
           {error}
         </div>
       )}
 
       {loading ? (
-        <div className="flex justify-center py-16">
-          <Loader2 size={28} className="animate-spin text-emerald-800" />
+        <div className="mt-6 flex justify-center rounded-2xl border border-[var(--dash-border)] bg-[var(--dash-surface)] py-16">
+          <Loader2 size={28} className="animate-spin" style={{ color: "var(--dash-accent)" }} />
         </div>
       ) : items.length === 0 ? (
-        <p className="mt-10 text-center text-sm text-slate-500">No ingredients match your criteria.</p>
+        <p className="mt-10 text-center text-sm" style={{ color: "var(--dash-text-muted)" }}>No ingredients match your criteria.</p>
       ) : (
         <ul className="mt-5 space-y-2">
           {items.map((item) => (
             <li key={item.name}>
               <div
                 onClick={() => openDetail(item.name)}
-                className="group flex w-full items-center gap-3 rounded-xl border border-emerald-900/10 bg-white px-4 py-3 text-left transition hover:border-emerald-900/20 hover:shadow-sm cursor-pointer"
+                className="group flex w-full items-center gap-3 rounded-2xl border border-[var(--dash-border)] bg-[var(--dash-surface)] px-4 py-3 text-left transition hover:-translate-y-0.5 hover:shadow-sm"
               >
                 <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${severityDot[item.severity] || severityDot.low}`} />
                 <div className="min-w-0 flex-1">
-                  <p className="truncate font-semibold capitalize text-slate-900">{item.name}</p>
-                  <p className="truncate text-xs text-slate-500">{item.reason}</p>
+                  <p className="truncate font-semibold capitalize" style={{ color: "var(--dash-text)" }}>{item.name}</p>
+                  <p className="truncate text-xs" style={{ color: "var(--dash-text-muted)" }}>{item.reason}</p>
                 </div>
-                <span className={`shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase ${severityLabelColor[item.severity] || severityLabelColor.low}`}>
+                <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${severityLabelColor[item.severity] || severityLabelColor.low}`}>
                   {item.severity}
                 </span>
-                <ChevronRight size={16} className="shrink-0 text-slate-400" />
+                <ChevronRight size={16} className="shrink-0" style={{ color: "var(--dash-text-muted)" }} />
               </div>
             </li>
           ))}

@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
-import { ChevronRight, History as HistoryIcon, Loader2, Trash2, Share2, RefreshCw } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { ChevronRight, History as HistoryIcon, Loader2, Trash2, Share2, RefreshCw, ArrowUpDown } from "lucide-react";
 import ScanResults from "../../components/dashboard/ScanResults";
 import { getScanHistory, getScanById, deleteScan, getErrorMessage } from "../../lib/mlApi";
 import { showError, showSuccess } from "../../lib/toast";
 
 function scoreBadge(score) {
-  if (score >= 70) return "bg-emerald-100 text-emerald-800";
-  if (score >= 40) return "bg-amber-100 text-amber-800";
-  return "bg-red-100 text-red-700";
+  if (score >= 70) return "badge-success";
+  if (score >= 40) return "badge-warning";
+  return "badge-danger";
 }
 
 export default function HistoryPage() {
@@ -16,6 +16,9 @@ export default function HistoryPage() {
   const [error, setError] = useState("");
   const [selected, setSelected] = useState(null);
   const [detailLoading, setDetailLoading] = useState(false);
+  const [filter, setFilter] = useState("all");
+  const [sortOrder, setSortOrder] = useState("newest");
+  const [expandedId, setExpandedId] = useState(null);
 
   const loadHistory = async (silent = false) => {
     if (!silent) setLoading(true);
@@ -79,6 +82,21 @@ export default function HistoryPage() {
     openDetail(item.id);
   };
 
+  const filteredItems = useMemo(() => {
+    const sorted = [...items].sort((a, b) => {
+      const dateA = new Date(a.createdAt || 0).getTime();
+      const dateB = new Date(b.createdAt || 0).getTime();
+      return sortOrder === "newest" ? dateB - dateA : dateA - dateB;
+    });
+
+    if (filter === "all") return sorted;
+    return sorted.filter((item) => {
+      if (filter === "safe") return (item.safetyScore || 0) >= 70;
+      if (filter === "caution") return (item.safetyScore || 0) >= 40 && (item.safetyScore || 0) < 70;
+      return (item.safetyScore || 0) < 40;
+    });
+  }, [filter, items, sortOrder]);
+
   if (selected) {
     return (
       <div>
@@ -95,89 +113,116 @@ export default function HistoryPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-slate-900">Scan history</h1>
-      <p className="mt-1 text-sm text-slate-500">Your past ingredient analyses.</p>
+      <div className="page-card p-6 sm:p-7">
+        <h1 className="text-2xl font-bold" style={{ color: "var(--dash-text)" }}>Scan history</h1>
+        <p className="mt-1 text-sm" style={{ color: "var(--dash-text-muted)" }}>Your past ingredient analyses.</p>
+
+        <div className="mt-5 flex flex-wrap gap-2">
+          {[
+            { id: "all", label: "All" },
+            { id: "safe", label: "Safe" },
+            { id: "caution", label: "Caution" },
+            { id: "risk", label: "High risk" },
+          ].map((chip) => (
+            <button
+              key={chip.id}
+              type="button"
+              onClick={() => setFilter(chip.id)}
+              className={`pill ${filter === chip.id ? "pill-active" : ""}`}
+            >
+              {chip.label}
+            </button>
+          ))}
+          <div className="ml-auto flex items-center gap-2">
+            <ArrowUpDown size={14} style={{ color: "var(--dash-text-muted)" }} />
+            <select
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value)}
+              className="rounded-full border border-[var(--dash-border)] bg-[var(--dash-surface)] px-3 py-1.5 text-sm"
+            >
+              <option value="newest">Newest first</option>
+              <option value="oldest">Oldest first</option>
+            </select>
+          </div>
+        </div>
+      </div>
 
       {error && (
-        <div className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="mt-4 rounded-xl border border-[var(--dash-danger)]/20 bg-[rgba(209,67,67,0.08)] px-4 py-3 text-sm text-[var(--dash-danger)]">
           {error}
         </div>
       )}
 
       {loading ? (
-        <div className="flex justify-center py-16">
-          <Loader2 size={28} className="animate-spin text-emerald-800" />
+        <div className="mt-6 flex justify-center rounded-2xl border border-[var(--dash-border)] bg-[var(--dash-surface)] py-16">
+          <Loader2 size={28} className="animate-spin" style={{ color: "var(--dash-accent)" }} />
         </div>
-      ) : items.length === 0 ? (
-        <div className="mt-10 flex flex-col items-center rounded-xl border border-dashed border-emerald-300 bg-white px-6 py-12 text-center">
-          <HistoryIcon size={32} className="text-emerald-700/50" />
-          <p className="mt-3 font-medium text-slate-700">No scans yet</p>
-          <p className="mt-1 text-sm text-slate-500">
+      ) : filteredItems.length === 0 ? (
+        <div className="mt-6 flex flex-col items-center rounded-2xl border border-dashed border-[var(--dash-border)] bg-[var(--dash-surface)] px-6 py-12 text-center">
+          <HistoryIcon size={32} style={{ color: "var(--dash-accent)", opacity: 0.5 }} />
+          <p className="mt-3 font-medium" style={{ color: "var(--dash-text)" }}>No matching scans yet</p>
+          <p className="mt-1 text-sm" style={{ color: "var(--dash-text-muted)" }}>
             Analyze a product on the Scan page and it will appear here.
           </p>
         </div>
       ) : (
-        <ul className="mt-6 space-y-2">
-          {items.map((item) => (
-            <li key={item.id}>
-              <div
-                onClick={() => openDetail(item.id)}
-                className="group flex w-full items-center justify-between gap-3 rounded-xl border border-emerald-900/10 bg-white px-4 py-3 text-left transition hover:border-emerald-900/20 hover:shadow-sm cursor-pointer"
-              >
-                <div className="min-w-0 flex-1">
-                  <p className="truncate font-semibold text-slate-900">
-                    {item.productName || "Untitled product"}
-                  </p>
-                  <p className="text-xs text-slate-500">
-                    {item.createdAt
-                      ? new Date(item.createdAt).toLocaleString()
-                      : "Unknown date"}
-                    {" · "}
-                    {item.totalIngredientsParsed ?? 0} ingredients
-                    {item.flaggedIngredients?.length
-                      ? ` · ${item.flaggedIngredients.length} flagged`
-                      : ""}
-                  </p>
-                </div>
-                
-                <div className="flex items-center gap-3">
-                  <div className="hidden group-hover:flex items-center gap-1">
-                    <button
-                      type="button"
-                      onClick={(e) => handleRescan(e, item)}
-                      className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-emerald-700 transition"
-                      title="Re-scan"
-                    >
-                      <RefreshCw size={14} />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={(e) => handleShare(e, item)}
-                      className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-blue-600 transition"
-                      title="Share"
-                    >
-                      <Share2 size={14} />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={(e) => handleDelete(e, item.id)}
-                      className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-red-600 transition"
-                      title="Delete"
-                    >
-                      <Trash2 size={14} />
-                    </button>
+        <ul className="mt-6 space-y-3">
+          {filteredItems.map((item) => {
+            const isExpanded = expandedId === item.id;
+            return (
+              <li key={item.id}>
+                <div
+                  onClick={() => setExpandedId(isExpanded ? null : item.id)}
+                  className="group rounded-2xl border border-[var(--dash-border)] bg-[var(--dash-surface)] px-4 py-4 text-left transition hover:-translate-y-0.5 hover:shadow-sm"
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate font-semibold" style={{ color: "var(--dash-text)" }}>
+                        {item.productName || "Untitled product"}
+                      </p>
+                      <p className="text-xs" style={{ color: "var(--dash-text-muted)" }}>
+                        {item.createdAt
+                          ? new Date(item.createdAt).toLocaleString()
+                          : "Unknown date"}
+                        {" · "}
+                        {item.totalIngredientsParsed ?? 0} ingredients
+                        {item.flaggedIngredients?.length
+                          ? ` · ${item.flaggedIngredients.length} flagged`
+                          : ""}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <span className={`shrink-0 rounded-full px-2.5 py-1 text-sm font-bold tabular-nums ${scoreBadge(item.safetyScore)}`}>
+                        {item.safetyScore}
+                      </span>
+                      <ChevronRight size={18} className="shrink-0 text-slate-400" />
+                    </div>
                   </div>
 
-                  <span
-                    className={`shrink-0 rounded-lg px-2.5 py-1 text-sm font-bold tabular-nums ${scoreBadge(item.safetyScore)}`}
-                  >
-                    {item.safetyScore}
-                  </span>
-                  <ChevronRight size={18} className="shrink-0 text-slate-400" />
+                  {isExpanded ? (
+                    <div className="mt-3 rounded-xl border border-[var(--dash-border)] bg-[var(--dash-surface-muted)] p-3">
+                      <div className="flex flex-wrap gap-2">
+                        <button type="button" onClick={(e) => handleRescan(e, item)} className="btn-secondary px-3 py-2 text-sm">
+                          <RefreshCw size={14} /> Re-scan
+                        </button>
+                        <button type="button" onClick={(e) => handleShare(e, item)} className="btn-secondary px-3 py-2 text-sm">
+                          <Share2 size={14} /> Share
+                        </button>
+                        <button type="button" onClick={(e) => handleDelete(e, item.id)} className="btn-secondary px-3 py-2 text-sm">
+                          <Trash2 size={14} /> Delete
+                        </button>
+                      </div>
+                      <div className="mt-3 text-sm" style={{ color: "var(--dash-text-muted)" }}>
+                        <p>Overall verdict: {item.safetyScore >= 70 ? "Safe" : item.safetyScore >= 40 ? "Caution" : "Avoid"}</p>
+                        <p className="mt-1">Flagged items: {item.flaggedIngredients?.length || 0}</p>
+                      </div>
+                    </div>
+                  ) : null}
                 </div>
-              </div>
-            </li>
-          ))}
+              </li>
+            );
+          })}
         </ul>
       )}
     </div>

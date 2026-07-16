@@ -12,10 +12,8 @@ const links = [
 ];
 
 const navClass = ({ isActive }) =>
-  `inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition ${
-    isActive
-      ? "bg-white shadow-sm"
-      : "hover:bg-white/60"
+  `inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium transition ${
+    isActive ? "bg-white shadow-sm" : "hover:bg-white/70"
   }`;
 
 export default function DashboardNav() {
@@ -37,7 +35,7 @@ export default function DashboardNav() {
       <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6">
         <NavLink to="/scan" className="flex items-center gap-2 transition-opacity hover:opacity-80">
           <div
-            className="flex h-9 w-9 items-center justify-center rounded-lg text-sm font-bold text-white"
+            className="flex h-9 w-9 items-center justify-center rounded-xl text-sm font-bold text-white"
             style={{ backgroundColor: "var(--dash-accent)" }}
           >
             P
@@ -48,7 +46,7 @@ export default function DashboardNav() {
         </NavLink>
 
         <nav
-          className="order-3 flex w-full flex-wrap items-center gap-1 rounded-xl p-1 sm:order-2 sm:w-auto"
+          className="order-3 flex w-full flex-wrap items-center gap-1 rounded-full p-1 sm:order-2 sm:w-auto"
           style={{ backgroundColor: "var(--dash-accent-soft)", opacity: 0.95 }}
         >
           {links.map(({ to, label, icon: Icon }) => (
@@ -76,7 +74,7 @@ export default function DashboardNav() {
           <button
             type="button"
             onClick={handleLogout}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-lg transition hover:bg-black/5"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full transition hover:bg-white/70"
             style={{ color: "var(--dash-accent)" }}
             aria-label="Log out"
           >

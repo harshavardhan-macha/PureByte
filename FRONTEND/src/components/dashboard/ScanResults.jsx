@@ -1,17 +1,17 @@
-import { useEffect, useState } from "react";
-import { AlertTriangle, CheckCircle2, Info, Bookmark, ChevronDown, ChevronUp } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { AlertTriangle, CheckCircle2, Info, Bookmark, ChevronDown, ChevronUp, ExternalLink } from "lucide-react";
 import { showSuccess } from "../../lib/toast";
 
 const severityStyles = {
-  high: "bg-red-50 text-red-700 border-red-200",
-  medium: "bg-amber-50 text-amber-800 border-amber-200",
-  low: "bg-yellow-50 text-yellow-800 border-yellow-200",
+  high: "badge-danger",
+  medium: "badge-warning",
+  low: "badge-success",
 };
 
 function scoreColor(score) {
-  if (score >= 70) return "text-emerald-700";
-  if (score >= 40) return "text-amber-600";
-  return "text-red-600";
+  if (score >= 70) return "text-[var(--dash-success)]";
+  if (score >= 40) return "text-[var(--dash-warning)]";
+  return "text-[var(--dash-danger)]";
 }
 
 function scoreLabel(score) {
@@ -20,10 +20,17 @@ function scoreLabel(score) {
   return "Significant concerns";
 }
 
+function verdictMeta(score) {
+  if (score >= 70) return { label: "Safe", tone: "badge-success", title: "Low concern" };
+  if (score >= 40) return { label: "Caution", tone: "badge-warning", title: "Needs attention" };
+  return { label: "Avoid", tone: "badge-danger", title: "High concern" };
+}
+
 export default function ScanResults({ result, onClose }) {
   const [displayScore, setDisplayScore] = useState(0);
   const [bookmarked, setBookmarked] = useState(false);
   const [expanded, setExpanded] = useState({});
+  const verdict = useMemo(() => verdictMeta(safetyScore), [safetyScore]);
 
   const {
     productName,
@@ -81,51 +88,50 @@ export default function ScanResults({ result, onClose }) {
   };
 
   return (
-    <div className="mt-8 space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="mt-6 space-y-6">
+      <div className="flex items-center justify-between gap-3">
         {onClose && (
-          <button
-            type="button"
-            onClick={onClose}
-            className="text-sm font-semibold text-emerald-800 hover:text-emerald-900 transition"
-          >
+          <button type="button" onClick={onClose} className="btn-secondary px-3 py-2 text-sm">
             ← Back to scanner
           </button>
         )}
-        
+
         <button
           type="button"
           onClick={handleBookmark}
-          className="inline-flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-semibold transition hover:bg-slate-50"
-          style={{ borderColor: "var(--dash-border)", color: bookmarked ? "var(--dash-accent)" : "var(--dash-text-muted)" }}
+          className="inline-flex items-center gap-1.5 rounded-full border border-[var(--dash-border)] bg-[var(--dash-surface)] px-3 py-1.5 text-xs font-semibold transition hover:bg-[var(--dash-surface-muted)]"
+          style={{ color: bookmarked ? "var(--dash-accent)" : "var(--dash-text-muted)" }}
         >
           <Bookmark size={14} fill={bookmarked ? "currentColor" : "none"} className="transition-transform active:scale-125" />
           {bookmarked ? "Bookmarked" : "Bookmark scan"}
         </button>
       </div>
 
-      <div className="rounded-xl border bg-white p-6 transition hover:shadow-sm" style={{ borderColor: "var(--dash-border)" }}>
+      <div className="page-card p-6 sm:p-7">
         {productName && (
-          <p className="text-sm font-bold" style={{ color: "var(--dash-text-muted)" }}>{productName}</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.24em]" style={{ color: "var(--dash-text-muted)" }}>{productName}</p>
         )}
-        <div className="mt-2 flex items-end gap-3">
-          <span className={`text-5xl font-extrabold tabular-nums transition-all duration-300 ${scoreColor(safetyScore)}`}>
+        <div className="mt-3 flex flex-wrap items-end gap-3">
+          <span className={`text-5xl font-extrabold tabular-nums ${scoreColor(safetyScore)}`}>
             {displayScore}
           </span>
           <div>
             <p className="text-lg font-bold" style={{ color: "var(--dash-text)" }}>Safety score</p>
             <p className="text-sm" style={{ color: "var(--dash-text-muted)" }}>{scoreLabel(safetyScore)}</p>
           </div>
+          <span className={`ml-auto inline-flex items-center rounded-full px-3 py-1 text-sm font-semibold ${verdict.tone}`}>
+            {verdict.label}
+          </span>
         </div>
 
-        <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
-          <div className="rounded-lg px-3 py-2" style={{ backgroundColor: "var(--dash-surface-muted)" }}>
+        <div className="mt-5 grid gap-3 text-sm sm:grid-cols-2">
+          <div className="rounded-2xl border border-[var(--dash-border)] bg-[var(--dash-surface-muted)] px-3 py-3">
             <p style={{ color: "var(--dash-text-muted)" }}>Rule-based score</p>
-            <p className="font-bold" style={{ color: "var(--dash-text)" }}>{ruleBasedScore}</p>
+            <p className="mt-1 font-bold" style={{ color: "var(--dash-text)" }}>{ruleBasedScore}</p>
           </div>
-          <div className="rounded-lg px-3 py-2" style={{ backgroundColor: "var(--dash-surface-muted)" }}>
+          <div className="rounded-2xl border border-[var(--dash-border)] bg-[var(--dash-surface-muted)] px-3 py-3">
             <p style={{ color: "var(--dash-text-muted)" }}>Ingredients parsed</p>
-            <p className="font-bold" style={{ color: "var(--dash-text)" }}>{totalIngredientsParsed}</p>
+            <p className="mt-1 font-bold" style={{ color: "var(--dash-text)" }}>{totalIngredientsParsed}</p>
           </div>
         </div>
 
@@ -136,14 +142,14 @@ export default function ScanResults({ result, onClose }) {
       </div>
 
       {personalizedWarnings.length > 0 && (
-        <div className="rounded-xl border border-amber-200 bg-amber-50 p-5">
-          <div className="mb-3 flex items-center gap-2 text-amber-900">
+        <div className="rounded-2xl border border-[var(--dash-warning)]/20 bg-[rgba(185,115,22,0.08)] p-5">
+          <div className="mb-3 flex items-center gap-2" style={{ color: "var(--dash-warning)" }}>
             <AlertTriangle size={18} />
             <h3 className="font-bold">Personalized warnings</h3>
           </div>
           <ul className="space-y-2">
             {personalizedWarnings.map((w, i) => (
-              <li key={i} className="text-sm text-amber-950 font-medium leading-relaxed">
+              <li key={i} className="text-sm font-medium leading-relaxed" style={{ color: "var(--dash-warning)" }}>
                 {w.message}
               </li>
             ))}
@@ -152,12 +158,17 @@ export default function ScanResults({ result, onClose }) {
       )}
 
       <div>
-        <h3 className="mb-3 text-lg font-bold" style={{ color: "var(--dash-text)" }}>
-          Flagged ingredients ({flaggedIngredients.length})
-        </h3>
+        <div className="mb-3 flex items-center justify-between">
+          <h3 className="text-lg font-bold" style={{ color: "var(--dash-text)" }}>
+            Flagged ingredients ({flaggedIngredients.length})
+          </h3>
+          <span className="text-sm" style={{ color: "var(--dash-text-muted)" }}>
+            Tap to expand details
+          </span>
+        </div>
 
         {flaggedIngredients.length === 0 ? (
-          <div className="flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+          <div className="flex items-center gap-2 rounded-2xl border border-[var(--dash-border)] bg-[var(--dash-surface)] px-4 py-3 text-sm" style={{ color: "var(--dash-success)" }}>
             <CheckCircle2 size={18} />
             No flagged ingredients detected in this list.
           </div>
@@ -165,33 +176,53 @@ export default function ScanResults({ result, onClose }) {
           <ul className="space-y-3">
             {flaggedIngredients.map((item) => {
               const isExpanded = !!expanded[item.ingredient];
+              const badgeClass = item.severity === "high" ? "badge-danger" : item.severity === "medium" ? "badge-warning" : "badge-success";
               return (
                 <li
                   key={item.ingredient}
                   onClick={() => toggleExpand(item.ingredient)}
-                  className={`rounded-xl border px-4 py-3 cursor-pointer transition select-none hover:shadow-sm ${severityStyles[item.severity] || severityStyles.low}`}
+                  className="cursor-pointer rounded-2xl border border-[var(--dash-border)] bg-[var(--dash-surface)] px-4 py-3 transition hover:-translate-y-0.5 hover:shadow-sm"
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <p className="font-bold capitalize">{item.ingredient}</p>
-                      <p className="text-xs opacity-75 font-medium mt-0.5">Click to reveal details</p>
+                      <p className="font-bold capitalize" style={{ color: "var(--dash-text)" }}>{item.ingredient}</p>
+                      <p className="mt-1 text-sm" style={{ color: "var(--dash-text-muted)" }}>
+                        {item.reason || "Ingredient flagged for further review."}
+                      </p>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="shrink-0 rounded-full bg-white/60 px-2 py-0.5 text-xs font-bold uppercase">
+                      <span className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-bold uppercase ${badgeClass}`}>
                         {item.severity}
                       </span>
-                      {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                      {isExpanded ? <ChevronUp size={16} style={{ color: "var(--dash-text-muted)" }} /> : <ChevronDown size={16} style={{ color: "var(--dash-text-muted)" }} />}
                     </div>
                   </div>
 
-                  <div className={`mt-2 transition-all duration-200 overflow-hidden ${isExpanded ? "max-h-[300px] opacity-100 border-t pt-2 mt-2 border-current/10" : "max-h-0 opacity-0"}`}>
-                    <p className="text-sm font-medium leading-relaxed opacity-95">{item.reason}</p>
-                    {item.relatedConditions?.length > 0 && (
-                      <p className="mt-2 text-xs font-bold opacity-80">
-                        Related: {item.relatedConditions.map((c) => c.replace(/_/g, " ")).join(", ")}
-                        {" · "}-{item.deduction} pts
+                  <div className={`mt-3 overflow-hidden transition-all duration-200 ${isExpanded ? "max-h-[320px] opacity-100" : "max-h-0 opacity-0"}`}>
+                    <div className="rounded-2xl border border-[var(--dash-border)] bg-[var(--dash-surface-muted)] p-3 text-sm" style={{ color: "var(--dash-text)" }}>
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="font-semibold">Health note</span>
+                        <span className="text-xs uppercase tracking-[0.24em]" style={{ color: "var(--dash-text-muted)" }}>
+                          {item.deduction || 0} pts
+                        </span>
+                      </div>
+                      <p className="mt-2 leading-relaxed" style={{ color: "var(--dash-text-muted)" }}>
+                        {item.reason || "This ingredient may be associated with health concerns and should be reviewed carefully."}
                       </p>
-                    )}
+                      {item.relatedConditions?.length > 0 ? (
+                        <p className="mt-2 text-xs" style={{ color: "var(--dash-text-muted)" }}>
+                          Related: {item.relatedConditions.map((c) => c.replace(/_/g, " ")).join(", ")}
+                        </p>
+                      ) : null}
+                      <a
+                        href="#"
+                        className="mt-3 inline-flex items-center gap-1 text-sm font-semibold"
+                        style={{ color: "var(--dash-accent)" }}
+                        onClick={(event) => event.stopPropagation()}
+                      >
+                        View ingredient database <ExternalLink size={14} />
+                      </a>
+                    </div>
                   </div>
                 </li>
               );
@@ -200,7 +231,7 @@ export default function ScanResults({ result, onClose }) {
         )}
       </div>
 
-      <div className="flex items-start gap-2 rounded-xl border bg-slate-50 px-4 py-3 text-xs text-slate-500" style={{ borderColor: "var(--dash-border)" }}>
+      <div className="flex items-start gap-2 rounded-2xl border border-[var(--dash-border)] bg-[var(--dash-surface)] px-4 py-3 text-xs" style={{ color: "var(--dash-text-muted)" }}>
         <Info size={14} className="mt-0.5 shrink-0" />
         Scores are based on known flagged additives and ML analysis. This is informational only — not medical advice.
       </div>

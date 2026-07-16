@@ -10,7 +10,7 @@ export default function AuthHeader() {
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 sm:px-6">
         <Link to="/" className="flex items-center gap-2 transition-opacity hover:opacity-80">
           <div
-            className="flex h-9 w-9 items-center justify-center rounded-lg text-sm font-bold text-white"
+            className="flex h-9 w-9 items-center justify-center rounded-xl text-sm font-bold text-white"
             style={{ backgroundColor: "var(--dash-accent)" }}
           >
             P
@@ -22,7 +22,7 @@ export default function AuthHeader() {
 
         <Link
           to="/"
-          className="inline-flex items-center gap-1.5 text-sm font-medium transition hover:opacity-80"
+          className="inline-flex items-center gap-1.5 rounded-full border border-transparent px-3 py-1.5 text-sm font-medium transition hover:border-[var(--dash-border)] hover:bg-[var(--dash-surface)]"
           style={{ color: "var(--dash-accent)" }}
         >
           <ArrowLeft size={16} />
