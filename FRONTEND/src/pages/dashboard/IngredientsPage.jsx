@@ -143,6 +143,7 @@ export default function IngredientsPage() {
                 <ChevronRight size={16} className="shrink-0" style={{ color: "var(--dash-text-muted)" }} />
               </div>
             </li>
+            );
           })}
         </ul>
       )}

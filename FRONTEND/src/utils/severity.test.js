@@ -1,3 +1,23 @@
+import { describe, it, expect } from "vitest";
+import { getEffectiveSeverity } from "./severity";
+
+describe("getEffectiveSeverity", () => {
+  it("returns severity_level when present and non-empty (case-insensitive)", () => {
+    const ingredient = { severity_level: "High" };
+    expect(getEffectiveSeverity(ingredient)).toBe("high");
+  });
+
+  it("falls back to nova_group when severity_level is missing (nova_group=4 -> severe)", () => {
+    const ingredient = { nova_group: 4 };
+    expect(getEffectiveSeverity(ingredient)).toBe("severe");
+  });
+
+  it("returns unknown when neither severity_level nor valid nova_group present", () => {
+    expect(getEffectiveSeverity({})).toBe("unknown");
+    expect(getEffectiveSeverity({ nova_group: 9 })).toBe("unknown");
+    expect(getEffectiveSeverity({ nova_group: null })).toBe("unknown");
+  });
+});
 import { describe, it, expect } from 'vitest'
 import { getEffectiveSeverity } from './severity'
 
