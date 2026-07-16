@@ -10,6 +10,7 @@ class HealthProfile(BaseModel):
     )
     allergies: List[str] = Field(default_factory=list)
     notes: Optional[str] = None
+    goals: Optional[dict] = None
 
 
 class AnalyzeTextRequest(BaseModel):
