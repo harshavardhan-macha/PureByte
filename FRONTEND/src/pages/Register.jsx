@@ -64,15 +64,15 @@ export default function Register() {
       className="relative w-full rounded-3xl p-8 pt-14 shadow-xl sm:p-10 sm:pt-16"
       style={{ backgroundColor: "var(--dash-surface)" }}
     >
-      <Link
+      {/* <Link
         to="/"
         className="absolute left-6 top-6 inline-flex items-center gap-1 text-xs font-semibold transition hover:opacity-80"
         style={{ color: "var(--dash-accent)" }}
       >
         ← Back to home
-      </Link>
+      </Link> */}
 
-      <div className="mb-6 flex justify-center">
+      {/* <div className="mb-6 flex justify-center">
         <Link to="/" className="flex items-center gap-2.5 transition-opacity hover:opacity-85">
           <div
             className="flex h-10 w-10 items-center justify-center rounded-xl text-lg font-bold text-white"
@@ -89,7 +89,7 @@ export default function Register() {
             </span>
           </div>
         </Link>
-      </div>
+      </div> */}
 
       <h1 className="mb-3 text-center text-3xl font-semibold" style={{ color: "var(--dash-text)" }}>
         Create account

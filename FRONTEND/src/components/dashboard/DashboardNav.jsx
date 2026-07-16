@@ -2,7 +2,6 @@ import { NavLink } from "react-router-dom";
 import { ScanLine, History, Leaf, Users, User, LogOut } from "lucide-react";
 import { useAuthContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import Logo from "../../assets/logo.png";
 
 const links = [
   { to: "/scan", label: "Scan", icon: ScanLine },
@@ -39,7 +38,7 @@ export default function DashboardNav() {
             className="flex h-9 w-9 items-center justify-center rounded-xl text-sm font-bold text-white"
             style={{ backgroundColor: "var(--dash-accent)" }}
           >
-            <img src={Logo} alt="PureByte" className="h-full w-full object-contain" />
+                          <img src="src/assets/logo.png"></img>
           </div>
           <span className="text-base font-semibold" style={{ color: "var(--dash-text)" }}>
             PureByte

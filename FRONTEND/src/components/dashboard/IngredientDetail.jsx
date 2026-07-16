@@ -1,15 +1,19 @@
 import { X } from "lucide-react";
+import { getEffectiveSeverity } from "../../utils/severity";
 
 const severityStyles = {
   high: "badge-danger",
   medium: "badge-warning",
   low: "badge-success",
+  severe: "badge-danger",
+  unknown: "badge-muted",
 };
 
 export default function IngredientDetail({ ingredient, onClose }) {
   if (!ingredient) return null;
 
-  const { name, severity, reason, aliases = [], conditions = [] } = ingredient;
+  const { name, reason, aliases = [], conditions = [] } = ingredient;
+  const severity = getEffectiveSeverity(ingredient);
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-4 sm:items-center">

@@ -1,11 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { AlertTriangle, CheckCircle2, Info, Bookmark, ChevronDown, ChevronUp, ExternalLink } from "lucide-react";
 import { showSuccess } from "../../lib/toast";
+import { getEffectiveSeverity } from "../../utils/severity";
 
 const severityStyles = {
   high: "badge-danger",
   medium: "badge-warning",
   low: "badge-success",
+  severe: "badge-danger",
+  unknown: "badge-muted",
 };
 
 function scoreColor(score) {
@@ -176,7 +179,8 @@ export default function ScanResults({ result, onClose }) {
           <ul className="space-y-3">
             {flaggedIngredients.map((item) => {
               const isExpanded = !!expanded[item.ingredient];
-              const badgeClass = item.severity === "high" ? "badge-danger" : item.severity === "medium" ? "badge-warning" : "badge-success";
+              const sev = getEffectiveSeverity(item);
+              const badgeClass = severityStyles[sev] || severityStyles.low;
               return (
                 <li
                   key={item.ingredient}
@@ -192,7 +196,7 @@ export default function ScanResults({ result, onClose }) {
                     </div>
                     <div className="flex items-center gap-2">
                       <span className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-bold uppercase ${badgeClass}`}>
-                        {item.severity}
+                        {sev}
                       </span>
                       {isExpanded ? <ChevronUp size={16} style={{ color: "var(--dash-text-muted)" }} /> : <ChevronDown size={16} style={{ color: "var(--dash-text-muted)" }} />}
                     </div>
