@@ -11,9 +11,14 @@ JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
 
 TESSERACT_CMD = os.getenv("TESSERACT_CMD")
 
-ALLOWED_ORIGINS = [o.strip() for o in os.getenv(
-    "ALLOWED_ORIGINS", "https://pure-byte-liart.vercel.app/,http://localhost:5173"
-).split(",")]
+ALLOWED_ORIGINS = [
+    o.strip().rstrip("/")
+    for o in os.getenv(
+        "ALLOWED_ORIGINS",
+        "https://pure-byte-liart.vercel.app,http://localhost:5173",
+    ).split(",")
+    if o.strip()
+]
 
 PORT = int(os.getenv("PORT", 8000))
 
