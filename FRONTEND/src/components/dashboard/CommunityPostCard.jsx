@@ -144,7 +144,7 @@ export default function CommunityPostCard({ post, onLikeUpdate }) {
             onClick={handleLike}
             disabled={likePending}
             className="inline-flex items-center gap-1.5 text-sm font-medium transition disabled:opacity-50"
-            style={{ color: liked ? "#dc2626" : "var(--dash-accent)" }}
+            style={{ color: liked ? "var(--dash-accent-hover)" : "var(--dash-accent)" }}
             aria-label={liked ? "Unlike" : "Like"}
           >
             <Heart size={20} fill={liked ? "currentColor" : "none"} className="transition-transform active:scale-125" />

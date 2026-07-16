@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
 import { showError, showSuccess } from "../lib/toast";
 
 export default function Register() {
   const navigate = useNavigate();
-  const { register, authLoading } = useAuthContext();
+  const { register, authLoading, isAuthenticated, loading } = useAuthContext();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -29,6 +29,18 @@ export default function Register() {
     setErrors(nextErrors);
     return Object.keys(nextErrors).length === 0;
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-emerald-500 border-t-transparent" />
+      </div>
+    );
+  }
+
+  if (isAuthenticated) {
+    return <Navigate to="/scan" replace />;
+  }
 
   const handleSubmit = async (event) => {
     event.preventDefault();

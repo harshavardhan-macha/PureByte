@@ -13,7 +13,8 @@ export default function AuthHeader() {
             className="flex h-9 w-9 items-center justify-center rounded-xl text-sm font-bold text-white"
             style={{ backgroundColor: "var(--dash-accent)" }}
           >
-            P
+                          <img src="src/assets/logo.png"></img>
+
           </div>
           <span className="text-base font-semibold" style={{ color: "var(--dash-text)" }}>
             PureByte

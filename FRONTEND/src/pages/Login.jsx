@@ -1,12 +1,12 @@
 import { useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useAuthContext } from "../context/AuthContext";
 import { showError, showSuccess } from "../lib/toast";
 
 export default function Login() {
   const navigate = useNavigate();
-  const { login, authLoading } = useAuthContext();
+  const { login, authLoading, isAuthenticated, loading } = useAuthContext();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -26,6 +26,18 @@ export default function Login() {
   }, [password]);
 
   const formValid = !emailError && !passwordError && email.trim() && password.length >= 8;
+
+  if (loading) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <Loader2 size={32} className="animate-spin text-emerald-700" />
+      </div>
+    );
+  }
+
+  if (isAuthenticated) {
+    return <Navigate to="/scan" replace />;
+  }
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -65,12 +77,13 @@ export default function Login() {
 
       <div className="mb-6 flex justify-center">
         <Link to="/" className="flex items-center gap-2.5 transition-opacity hover:opacity-85">
-          <div
+          {/* <div
             className="flex h-10 w-10 items-center justify-center rounded-xl text-lg font-bold text-white"
             style={{ backgroundColor: "var(--dash-accent)" }}
           >
-            P
-          </div>
+                                      <img src="src/assets/logo.png"></img>
+
+          </div> */}
           <div className="text-left">
             <span className="block text-sm font-semibold" style={{ color: "var(--dash-text)" }}>
               PureByte

@@ -273,14 +273,14 @@ function HowItWorks() {
     </div>
 
     {/* Warning Food Card */}
-    <div className="bg-red-50 border border-red-300 rounded-3xl p-6 hover:scale-101 duration-30">
+    <div className="bg-green-50 border border-green-300 rounded-3xl p-6 hover:scale-101 duration-30">
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h3 className="text-lg font-semibold sm:text-xl">
           Cheeseburger 🍔
         </h3>
 
-        <span className="w-fit rounded-full bg-red-500 px-3 py-2 text-xs font-medium text-white sm:px-4 sm:text-sm">
+        <span className="w-fit rounded-full bg-green-500 px-3 py-2 text-xs font-medium text-white sm:px-4 sm:text-sm">
           Consume in Moderation
         </span>
       </div>
@@ -300,14 +300,14 @@ function HowItWorks() {
 
         <div className="flex justify-between">
           <span>Fat</span>
-          <span className="text-red-600 font-semibold">
+          <span className="text-green-600 font-semibold">
             High ✕
           </span>
         </div>
 
         <div className="flex justify-between">
           <span>Sodium</span>
-          <span className="text-red-600 font-semibold">
+          <span className="text-green-600 font-semibold">
             High ✕
           </span>
         </div>
