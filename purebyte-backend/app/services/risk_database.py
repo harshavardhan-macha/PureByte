@@ -67,7 +67,7 @@ FLAGGED_INGREDIENTS = {
     },
     "red 40": {
         "aliases": ["allura red", "e129"],
-        "severity": "medium",
+        "severity": "medium",  
         "reason": "Synthetic dye linked to hyperactivity in children; allergen for some.",
         "conditions": ["adhd_sensitivity", "allergy"],
     },
