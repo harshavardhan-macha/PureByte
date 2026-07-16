@@ -3,6 +3,7 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useAuthContext } from "../context/AuthContext";
 import { showError, showSuccess } from "../lib/toast";
+import Logo from "../assets/logo.png";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -77,13 +78,12 @@ export default function Login() {
 
       <div className="mb-6 flex justify-center">
         <Link to="/" className="flex items-center gap-2.5 transition-opacity hover:opacity-85">
-          {/* <div
+          <div
             className="flex h-10 w-10 items-center justify-center rounded-xl text-lg font-bold text-white"
             style={{ backgroundColor: "var(--dash-accent)" }}
           >
-                                      <img src="src/assets/logo.png"></img>
-
-          </div> */}
+            <img src={Logo} alt="PureByte" className="h-full w-full object-contain" />
+          </div>
           <div className="text-left">
             <span className="block text-sm font-semibold" style={{ color: "var(--dash-text)" }}>
               PureByte
