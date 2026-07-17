@@ -5,6 +5,7 @@ import CreatePostModal from "../../components/dashboard/CreatePostModal";
 import {
   getCommunityPosts,
   createCommunityPost,
+  uploadImageToCloudinary,
   getApiErrorMessage,
 } from "../../lib/communityApi";
 import { showError, showSuccess } from "../../lib/toast";
@@ -69,7 +70,16 @@ export default function CommunityPage() {
   const handleCreatePost = async (file, caption) => {
     setSubmitting(true);
     try {
-      const { data } = await createCommunityPost(file, caption);
+      let imageInput = file;
+      const useCloudinary = Boolean(
+        import.meta.env.VITE_CLOUDINARY_CLOUD_NAME && import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET,
+      );
+
+      if (useCloudinary && file instanceof File) {
+        imageInput = await uploadImageToCloudinary(file);
+      }
+
+      const { data } = await createCommunityPost(imageInput, caption);
       setPosts((prev) => [data, ...prev]);
       setComposerOpen(false);
       setDraftHasContent(false);

@@ -63,12 +63,16 @@ export const getPosts = async (req, res) => {
 
 export const createPost = async (req, res) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ message: "An image is required for each post" });
+    const caption = (req.body.caption || "").trim();
+    let imageUrl = req.body.imageUrl;
+
+    if (!imageUrl && req.file) {
+      imageUrl = `/uploads/${req.file.filename}`;
     }
 
-    const caption = (req.body.caption || "").trim();
-    const imageUrl = `/uploads/${req.file.filename}`;
+    if (!imageUrl) {
+      return res.status(400).json({ message: "An image is required for each post" });
+    }
 
     const post = await Post.create({
       userId: req.user._id,
