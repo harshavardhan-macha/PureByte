@@ -176,11 +176,63 @@ FLAGGED_INGREDIENTS = {
 }
 
 
+def _normalize_aliases(aliases):
+    if isinstance(aliases, str):
+        return [alias.strip().lower() for alias in aliases.split(",") if alias.strip()]
+    if isinstance(aliases, list):
+        return [str(alias).strip().lower() for alias in aliases if str(alias).strip()]
+    return []
+
+
+def _iter_db_ingredients():
+    for doc in ingredients_collection.find({}, {"_id": 0, "name": 1, "aliases": 1, "severity": 1, "reason": 1, "conditions": 1}):
+        name = doc.get("name")
+        if not name:
+            continue
+        aliases = _normalize_aliases(doc.get("aliases", []))
+        yield {
+            "name": name.strip().lower(),
+            "aliases": aliases,
+            "severity": doc.get("severity"),
+            "reason": doc.get("reason", "Matched ingredient from database."),
+            "conditions": doc.get("conditions") or [],
+        }
+
+
 def lookup_all_names():
     """Flatten ingredient + aliases into a single searchable map -> canonical key."""
     flat = {}
+
     for canonical, meta in FLAGGED_INGREDIENTS.items():
         flat[canonical] = canonical
         for alias in meta.get("aliases", []):
             flat[alias.lower()] = canonical
+
+    for doc in _iter_db_ingredients():
+        canonical = doc["name"]
+        if canonical not in flat:
+            flat[canonical] = canonical
+        for alias in doc["aliases"]:
+            if alias not in flat:
+                flat[alias] = canonical
+
     return flat
+
+
+def get_ingredient_meta(name: str) -> dict | None:
+    canonical = name.strip().lower()
+    if canonical in FLAGGED_INGREDIENTS:
+        return FLAGGED_INGREDIENTS[canonical]
+
+    doc = ingredients_collection.find_one(
+        {"$or": [{"name": {"$regex": f"^{canonical}$", "$options": "i"}}, {"aliases": {"$regex": f"^{canonical}$", "$options": "i"}}]},
+        {"_id": 0, "name": 1, "aliases": 1, "severity": 1, "reason": 1, "conditions": 1},
+    )
+    if not doc or not doc.get("severity"):
+        return None
+
+    return {
+        "severity": doc["severity"],
+        "reason": doc.get("reason", "Matched ingredient from database."),
+        "conditions": doc.get("conditions") or [],
+    }

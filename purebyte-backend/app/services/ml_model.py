@@ -2,7 +2,7 @@ import os
 import joblib
 import sys
 from app.config import MODEL_PATH, VECTORIZER_PATH
-from app.services.risk_database import FLAGGED_INGREDIENTS, lookup_all_names
+from app.services.risk_database import FLAGGED_INGREDIENTS, get_ingredient_meta, lookup_all_names
 from app.services.text_extractor import tokenize_ingredients
 
 _model = None
@@ -37,9 +37,12 @@ def _ingredient_based_probability(ingredients_text: str) -> float:
     severity_score = 0.0
     for token in tokens:
         for alias, canonical in name_map.items():
-            if alias in token and canonical in FLAGGED_INGREDIENTS:
+            if alias in token:
+                meta = get_ingredient_meta(canonical) or FLAGGED_INGREDIENTS.get(canonical)
+                if not meta:
+                    break
                 flagged_hits += 1
-                severity = FLAGGED_INGREDIENTS[canonical]["severity"]
+                severity = meta.get("severity", "low")
                 if severity == "high":
                     severity_score += 0.35
                 elif severity == "medium":
