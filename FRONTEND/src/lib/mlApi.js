@@ -58,9 +58,7 @@ export const analyzeImage = (file, productName) => {
   const form = new FormData();
   form.append("file", file);
   if (productName) form.append("productName", productName);
-  return mlApi.post("/api/scan/analyze-image", form, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
+  return mlApi.post("/api/scan/analyze-image", form);
 };
 
 export const getScanHistory = (limit = 20, skip = 0) =>
