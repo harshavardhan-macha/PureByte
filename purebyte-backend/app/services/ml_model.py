@@ -34,10 +34,18 @@ def _ingredient_based_probability(ingredients_text: str) -> float:
 
     name_map = lookup_all_names()
     flagged_hits = 0
+    severity_score = 0.0
     for token in tokens:
         for alias, canonical in name_map.items():
             if alias in token and canonical in FLAGGED_INGREDIENTS:
                 flagged_hits += 1
+                severity = FLAGGED_INGREDIENTS[canonical]["severity"]
+                if severity == "high":
+                    severity_score += 0.35
+                elif severity == "medium":
+                    severity_score += 0.18
+                else:
+                    severity_score += 0.1
                 break
 
     suspicious_keywords = [
@@ -61,21 +69,25 @@ def _ingredient_based_probability(ingredients_text: str) -> float:
         "hydrolyzed",
         "partially hydrogenated",
         "hydrogenated",
+        "citric acid",
+        "sodium",
+        "monosodium",
+        "natural flavors",
+        "artificial flavors",
     ]
-    suspicious_matches = sum(
-        1
-        for token in tokens
-        if any(keyword in token for keyword in suspicious_keywords)
-    )
+    suspicious_matches = 0
+    for token in tokens:
+        for keyword in suspicious_keywords:
+            if keyword in token:
+                suspicious_matches += 1
+                break
 
     if flagged_hits == 0:
-        probability = 0.05 + min(0.35, 0.06 * suspicious_matches + 0.02 * max(0, len(tokens) - 3))
-        return min(0.9, probability)
-    if flagged_hits == 1:
-        return min(0.9, 0.25 + 0.07 * suspicious_matches)
-    if flagged_hits == 2:
-        return min(0.9, 0.42 + 0.06 * suspicious_matches)
-    return min(0.9, 0.2 + (flagged_hits * 0.12) + 0.05 * suspicious_matches)
+        base_prob = 0.1 + 0.05 * min(suspicious_matches, 4) + 0.02 * max(0, len(tokens) - 4)
+        return min(0.85, max(0.05, base_prob))
+
+    base_prob = 0.24 + severity_score + 0.04 * min(suspicious_matches, 4) + 0.01 * max(0, len(tokens) - 5)
+    return min(0.95, max(0.1, base_prob))
 
 
 def predict_unsafe_probability(ingredients_text: str) -> float:
@@ -90,13 +102,20 @@ def predict_unsafe_probability(ingredients_text: str) -> float:
     produces meaningful results.
     """
     _load()
+    heuristic_prob = _ingredient_based_probability(ingredients_text)
     if _model is None or _vectorizer is None:
-        return _ingredient_based_probability(ingredients_text)
+        return heuristic_prob
 
     try:
         X = _vectorizer.transform([ingredients_text.lower()])
+        if hasattr(_model, "coef_") and X.shape[1] != _model.coef_.shape[1]:
+            raise ValueError(
+                f"Feature mismatch: vectorizer={X.shape[1]} vs model={_model.coef_.shape[1]}"
+            )
         proba = _model.predict_proba(X)[0]
-        return float(proba[1])
+        prob = float(proba[1])
+        blended = 0.65 * prob + 0.35 * heuristic_prob
+        return min(max(blended, 0.0), 1.0)
     except Exception as e:
         print(f"Warning: model prediction failed, using ingredient heuristic: {e}", file=sys.stderr)
-        return _ingredient_based_probability(ingredients_text)
+        return heuristic_prob
