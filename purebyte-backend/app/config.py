@@ -15,10 +15,14 @@ ALLOWED_ORIGINS = [
     o.strip().rstrip("/")
     for o in os.getenv(
         "ALLOWED_ORIGINS",
-        "https://pure-byte-liart.vercel.app,http://localhost:5173",
+        "http://localhost:5173,https://purebyte.lovable.app,https://pure-byte-liart.vercel.app,https://pure-byte-harsha-vardhans-projects-3774e119.vercel.app"
     ).split(",")
     if o.strip()
 ]
+
+# Always allow localhost dev when no ALLOWED_ORIGINS are configured.
+if not ALLOWED_ORIGINS:
+    ALLOWED_ORIGINS = ["http://localhost:5173"]
 
 PORT = int(os.getenv("PORT", 8000))
 
