@@ -40,13 +40,42 @@ def _ingredient_based_probability(ingredients_text: str) -> float:
                 flagged_hits += 1
                 break
 
+    suspicious_keywords = [
+        "natural flavor",
+        "natural flavour",
+        "artificial flavor",
+        "artificial flavour",
+        "flavor",
+        "flavour",
+        "preservative",
+        "emulsifier",
+        "stabilizer",
+        "thickener",
+        "color",
+        "colour",
+        "dye",
+        "maltodextrin",
+        "corn syrup",
+        "high fructose",
+        "modified",
+        "hydrolyzed",
+        "partially hydrogenated",
+        "hydrogenated",
+    ]
+    suspicious_matches = sum(
+        1
+        for token in tokens
+        if any(keyword in token for keyword in suspicious_keywords)
+    )
+
     if flagged_hits == 0:
-        return 0.1
+        probability = 0.05 + min(0.35, 0.06 * suspicious_matches + 0.02 * max(0, len(tokens) - 3))
+        return min(0.9, probability)
     if flagged_hits == 1:
-        return 0.28
+        return min(0.9, 0.25 + 0.07 * suspicious_matches)
     if flagged_hits == 2:
-        return 0.45
-    return min(0.9, 0.2 + (flagged_hits * 0.12))
+        return min(0.9, 0.42 + 0.06 * suspicious_matches)
+    return min(0.9, 0.2 + (flagged_hits * 0.12) + 0.05 * suspicious_matches)
 
 
 def predict_unsafe_probability(ingredients_text: str) -> float:

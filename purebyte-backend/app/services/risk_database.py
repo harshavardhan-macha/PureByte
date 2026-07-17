@@ -1,6 +1,6 @@
 """
 Curated flagged-ingredient database.
-
+ 
 Each key is an ingredient name (lowercase, as it would appear on a label).
 `aliases` lets us match common synonyms/E-numbers.
 `severity` drives the point deduction in the deterministic score.

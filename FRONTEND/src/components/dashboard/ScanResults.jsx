@@ -41,6 +41,7 @@ export default function ScanResults({ result, onClose }) {
     mlUnsafeProbability = 0,
     flaggedIngredients = [],
     personalizedWarnings = [],
+    parsedIngredients = [],
     totalIngredientsParsed = 0,
     createdAt,
   } = result || {};
@@ -137,6 +138,18 @@ export default function ScanResults({ result, onClose }) {
             <p className="mt-1 font-bold" style={{ color: "var(--dash-text)" }}>{totalIngredientsParsed}</p>
           </div>
         </div>
+        {parsedIngredients.length > 0 && (
+          <div className="mt-4 rounded-2xl border border-[var(--dash-border)] bg-[var(--dash-surface-muted)] px-4 py-4 text-sm text-[var(--dash-text-muted)]">
+            <p className="font-semibold text-[var(--dash-text)]">Parsed ingredient tokens</p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {parsedIngredients.map((token, idx) => (
+                <span key={`${token}-${idx}`} className="rounded-full border border-[var(--dash-border)] bg-white px-3 py-1 text-xs font-medium text-[var(--dash-text)]">
+                  {token}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
 
         <p className="mt-3 text-xs" style={{ color: "var(--dash-text-muted)" }}>
           ML unsafe probability: {(mlUnsafeProbability * 100).toFixed(1)}%
@@ -193,6 +206,11 @@ export default function ScanResults({ result, onClose }) {
                       <p className="mt-1 text-sm" style={{ color: "var(--dash-text-muted)" }}>
                         {item.reason || "Ingredient flagged for further review."}
                       </p>
+                      {item.matchedText && (
+                        <p className="mt-2 text-xs uppercase tracking-[0.2em]" style={{ color: "var(--dash-text-muted)" }}>
+                          Matched label text: {item.matchedText}
+                        </p>
+                      )}
                     </div>
                     <div className="flex items-center gap-2">
                       <span className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-bold uppercase ${badgeClass}`}>

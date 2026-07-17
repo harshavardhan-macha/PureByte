@@ -20,6 +20,7 @@ class AnalyzeTextRequest(BaseModel):
 
 class FlaggedIngredient(BaseModel):
     ingredient: str
+    matchedText: str
     severity: str            # "high" | "medium" | "low"
     reason: str
     relatedConditions: List[str] = Field(default_factory=list)
@@ -39,6 +40,7 @@ class AnalyzeResponse(BaseModel):
     mlUnsafeProbability: float
     flaggedIngredients: List[FlaggedIngredient]
     personalizedWarnings: List[PersonalizedWarning]
+    parsedIngredients: List[str] = Field(default_factory=list)
     totalIngredientsParsed: int
     createdAt: datetime = Field(default_factory=datetime.utcnow)
 

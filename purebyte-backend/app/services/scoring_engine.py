@@ -83,6 +83,7 @@ def analyze_ingredients(raw_text: str, user_conditions: List[str] = None) -> Dic
         "flaggedIngredients": [
             {
                 "ingredient": f["ingredient"],
+                "matchedText": f["matchedText"],
                 "severity": f["severity"],
                 "reason": f["reason"],
                 "relatedConditions": f["relatedConditions"],
@@ -90,6 +91,7 @@ def analyze_ingredients(raw_text: str, user_conditions: List[str] = None) -> Dic
             }
             for f in flagged
         ],
+        "parsedIngredients": tokens,
         "personalizedWarnings": personalized_warnings,
         "totalIngredientsParsed": len(tokens),
     }
