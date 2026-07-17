@@ -15,7 +15,7 @@ ALLOWED_ORIGINS = [
     o.strip().rstrip("/")
     for o in os.getenv(
         "ALLOWED_ORIGINS",
-        "http://localhost:5173,https://purebyte.lovable.app,https://pure-byte-liart.vercel.app,https://pure-byte-harsha-vardhans-projects-3774e119.vercel.app,https://purebyte-1.onrender.com"
+        "http://localhost:5173,https://purebyte.lovable.app,https://pure-byte-liart.vercel.app"
     ).split(",")
     if o.strip()
 ]
