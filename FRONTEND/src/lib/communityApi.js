@@ -25,6 +25,7 @@ export const addPostComment = (postId, text) =>
 export const resolveImageUrl = (imageUrl) => {
   if (!imageUrl) return "";
   if (imageUrl.startsWith("http")) return imageUrl;
+  if (imageUrl.startsWith("/uploads")) return imageUrl;
   const base = import.meta.env.VITE_API_URL?.trim();
   if (!base) return imageUrl;
   return `${base.replace(/\/$/, "")}${imageUrl.startsWith("/") ? "" : "/"}${imageUrl}`;
