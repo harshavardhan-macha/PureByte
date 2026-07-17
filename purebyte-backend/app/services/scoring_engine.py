@@ -1,6 +1,6 @@
 from typing import List, Dict, Any
 
-from app.services.risk_database import FLAGGED_INGREDIENTS, SEVERITY_DEDUCTION, get_ingredient_meta, lookup_all_names
+from app.services.risk_database import FLAGGED_INGREDIENTS, SEVERITY_DEDUCTION, lookup_all_names
 from app.services.text_extractor import isolate_ingredients_section, tokenize_ingredients
 from app.services.ml_model import predict_unsafe_probability
 
@@ -19,17 +19,14 @@ def find_flagged_ingredients(tokens: List[str]) -> List[Dict[str, Any]]:
     for token in tokens:
         for alias, canonical in name_map.items():
             if alias in token and canonical not in seen_canonical:
-                meta = get_ingredient_meta(canonical) or FLAGGED_INGREDIENTS.get(canonical)
-                if not meta:
-                    continue
-                severity = meta.get("severity", "low")
+                meta = FLAGGED_INGREDIENTS[canonical]
                 flagged.append({
                     "ingredient": canonical,
                     "matchedText": token,
-                    "severity": severity,
-                    "reason": meta.get("reason", "Matched ingredient from database."),
-                    "relatedConditions": meta.get("conditions", []),
-                    "deduction": SEVERITY_DEDUCTION.get(severity, 4),
+                    "severity": meta["severity"],
+                    "reason": meta["reason"],
+                    "relatedConditions": meta["conditions"],
+                    "deduction": SEVERITY_DEDUCTION[meta["severity"]],
                 })
                 seen_canonical.add(canonical)
     return flagged
