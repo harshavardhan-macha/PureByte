@@ -1,5 +1,5 @@
 from typing import List, Dict, Any
-
+import re
 from app.services.risk_database import FLAGGED_INGREDIENTS, SEVERITY_DEDUCTION, lookup_all_names
 from app.services.text_extractor import isolate_ingredients_section, tokenize_ingredients
 from app.services.ml_model import predict_unsafe_probability
@@ -17,8 +17,13 @@ def find_flagged_ingredients(tokens: List[str]) -> List[Dict[str, Any]]:
     seen_canonical = set()
 
     for token in tokens:
+        normalized = token.lower().strip()
         for alias, canonical in name_map.items():
-            if alias in token and canonical not in seen_canonical:
+            alias_lower = alias.lower()
+            # word-boundary match instead of raw substring containment
+            if canonical in seen_canonical:
+                continue
+            if re.search(rf"\b{re.escape(alias_lower)}\b", normalized):
                 meta = FLAGGED_INGREDIENTS[canonical]
                 flagged.append({
                     "ingredient": canonical,
