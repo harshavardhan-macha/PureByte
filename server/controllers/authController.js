@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import { fallbackAuthStore, isFallbackMode } from "../utils/authStore.js";
 
 const generateToken = (userId) => {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET, {
@@ -15,17 +16,23 @@ export const register = async (req, res) => {
       return res.status(400).json({ message: "Please provide name, email, and password" });
     }
 
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
+    let user;
+
+    if (isFallbackMode()) {
+      user = await fallbackAuthStore.createUser({ name, email, password });
+    } else {
+      const existingUser = await User.findOne({ email });
+      if (existingUser) {
+        return res.status(400).json({ message: "User already exists" });
+      }
+
+      user = await User.create({ name, email, password });
     }
 
-    const user = await User.create({ name, email, password });
-
     res.status(201).json({
-      token: generateToken(user._id),
+      token: generateToken(user.id || user._id),
       user: {
-        id: user._id,
+        id: user.id || user._id,
         name: user.name,
         email: user.email,
       },
@@ -44,15 +51,24 @@ export const login = async (req, res) => {
       return res.status(400).json({ message: "Please provide email and password" });
     }
 
-    const user = await User.findOne({ email }).select("+password");
-    if (!user || !(await user.matchPassword(password))) {
-      return res.status(401).json({ message: "Invalid credentials" });
+    let user;
+
+    if (isFallbackMode()) {
+      user = await fallbackAuthStore.findByEmail(email);
+      if (!user || !(await fallbackAuthStore.verifyPassword(user, password))) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+    } else {
+      user = await User.findOne({ email }).select("+password");
+      if (!user || !(await user.matchPassword(password))) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
     }
 
     res.status(200).json({
-      token: generateToken(user._id),
+      token: generateToken(user.id || user._id),
       user: {
-        id: user._id,
+        id: user.id || user._id,
         name: user.name,
         email: user.email,
       },

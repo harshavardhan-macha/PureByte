@@ -1,29 +1,29 @@
 import Header from "../components/Header";
-import {Camera,Brain,BarChart3,CheckCircle,} from "lucide-react";
-import Salad from "../assets/saladImg.png";
-import Burger from "../assets/BurgerImg.png";
+import {Camera,ScanSearch,HeartPulse,Sparkles,} from "lucide-react";
+import Oats from "../assets/Oats.png";
+import coco from "../assets/coco.png";
 
 function HowItWorks() {
   const steps = [
     {
       icon: Camera,
-      title: "Upload Food Image",
-      desc: "Capture a photo or upload an image of the food you want to analyze.",
+      title: "Scan Product",
+      desc: "Capture or upload an image of a packaged food product.",
     },
     {
-      icon: Brain,
-      title: "AI Analyzes Food",
-      desc: "Our advanced AI model scans the image and identifies the food and ingredients.",
+      icon: ScanSearch,
+      title: "OCR Extracts Ingredients",
+      desc: "Our OCR engine automatically reads ingredients and nutrition information from the label.",
     },
     {
-      icon: BarChart3,
-      title: "View Nutrition & Calories",
-      desc: "Get detailed nutritional breakdown including calories, macros, and key nutrients.",
+      icon: HeartPulse,
+      title: "Select Health Conditions",
+      desc: "Choose your health conditions such as Diabetes, Hypertension, Kidney Disease, Pregnancy, or Allergies.",
     },
     {
-      icon: CheckCircle,
-      title: "Make Better Choices",
-      desc: "Use the insights to track your diet and make healthier food choices every day.",
+      icon: Sparkles,
+      title: "AI Risk Assessment",
+      desc: "Our AI analyzes the ingredients and generates a personalized health recommendation based on your selected conditions.",
     },
   ];
 
@@ -54,8 +54,8 @@ function HowItWorks() {
               </h1>
 
               <p className="mt-6 text-gray-600 max-w-md">
-                PureByte makes food detection and nutrition analysis
-                easy in just a few simple steps.
+                PureByte makes label scanning and personalized health
+                assessment easy in just a few simple steps.
               </p>
             </div>
 
@@ -128,18 +128,18 @@ function HowItWorks() {
               <div className="text-center">
 
                 <h3 className="font-semibold text-xl">
-                  Nutrition Facts
+                  Personal Health Report
                 </h3>
 
                 {/* Circle */}
                 <div className="mx-auto mt-6 flex h-32 w-32 items-center justify-center rounded-full border-[10px] border-green-500 sm:mt-8 sm:h-40 sm:w-40 sm:border-[12px]">
                   <div>
                     <h2 className="text-3xl font-bold sm:text-4xl">
-                      450
+                      92
                     </h2>
 
                     <p className="text-gray-500">
-                      kcal
+                      Safety Score
                     </p>
                   </div>
 
@@ -149,18 +149,18 @@ function HowItWorks() {
                 <div className="mt-8 space-y-4 text-left">
 
                   <div className="flex justify-between">
-                    <span>Protein</span>
-                    <span>18g</span>
+                    <span>Risk Level</span>
+                    <span>Low</span>
                   </div>
 
                   <div className="flex justify-between">
-                    <span>Carbohydrates</span>
-                    <span>45g</span>
+                    <span>Condition</span>
+                    <span>Diabetes</span>
                   </div>
 
                   <div className="flex justify-between">
-                    <span>Fat</span>
-                    <span>22g</span>
+                    <span>Recommendation</span>
+                    <span>Consume</span>
                   </div>
 
                 </div>
@@ -169,7 +169,7 @@ function HowItWorks() {
                   type="button"
                   className="mt-6 min-h-11 w-full rounded-xl bg-green-500 py-3 font-semibold text-white transition hover:bg-green-600 sm:mt-8"
                 >
-                  Save Result
+                  View Full Report
                 </button>
 
               </div>
@@ -183,33 +183,33 @@ function HowItWorks() {
 
   <div className="bg-green-50 rounded-2xl p-6 text-center border border-green-100">
     <h3 className="text-3xl font-bold text-green-500">⚡</h3>
-    <p className="mt-3 font-semibold">Fast</p>
+    <p className="mt-3 font-semibold">Fast OCR</p>
     <p className="text-sm text-gray-600 mt-1">
-      Instant AI-powered food recognition.
+      Quickly extracts ingredient information from product labels.
     </p>
   </div>
 
   <div className="bg-green-50 rounded-2xl p-6 text-center border border-green-100">
-    <h3 className="text-3xl font-bold text-green-500">🎯</h3>
-    <p className="mt-3 font-semibold">Accurate</p>
+    <h3 className="text-3xl font-bold text-green-500">🩺</h3>
+    <p className="mt-3 font-semibold">Personalized Analysis</p>
     <p className="text-sm text-gray-600 mt-1">
-      Reliable nutrition and calorie analysis.
+      Recommendations based on individual health conditions.
     </p>
   </div>
 
   <div className="bg-green-50 rounded-2xl p-6 text-center border border-green-100">
     <h3 className="text-3xl font-bold text-green-500">🧠</h3>
-    <p className="mt-3 font-semibold">Smart</p>
+    <p className="mt-3 font-semibold">Intelligent AI</p>
     <p className="text-sm text-gray-600 mt-1">
-      Advanced AI understands your meals.
+      AI evaluates ingredients and identifies possible health risks.
     </p>
   </div>
 
   <div className="bg-green-50 rounded-2xl p-6 text-center border border-green-100">
     <h3 className="text-3xl font-bold text-green-500">🔒</h3>
-    <p className="mt-3 font-semibold">Secure</p>
+    <p className="mt-3 font-semibold">Secure Data</p>
     <p className="text-sm text-gray-600 mt-1">
-      Your data stays safe and protected.
+      Personal information and reports remain private and protected.
     </p>
   </div>
 
@@ -219,13 +219,12 @@ function HowItWorks() {
 
   <div className="text-center mb-12">
     <h2 className="text-3xl sm:text-4xl font-bold">
-      Understand Your Nutrition
-      <span className="text-green-500"> Instantly</span>
+      Personalized Health
+      <span className="text-green-500"> Assessment</span>
     </h2>
 
     <p className="text-gray-600 mt-4 max-w-2xl mx-auto">
-      PureByte not only detects food but also helps you understand
-      whether your meal is a healthy choice or should be consumed in moderation.
+      PureByte analyzes food products and provides personalized recommendations according to your medical conditions instead of generic nutrition information.
     </p>
   </div>
 
@@ -236,36 +235,38 @@ function HowItWorks() {
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h3 className="text-lg font-semibold sm:text-xl">
-          Fresh Salad 🥗
+            Britannia NutriChoice Digestive
         </h3>
 
         <span className="w-fit rounded-full bg-green-500 px-3 py-2 text-xs font-medium text-white sm:px-4 sm:text-sm">
-          Healthy Choice
+          Diabetes-Friendly
         </span>
       </div>
 
       <img
-        src={Salad}
-        alt="Salad"
-        className="mx-auto mt-4 h-auto w-full max-h-64 rounded-2xl object-cover sm:max-h-72"
+        src={Oats}
+        alt="oats"
+        className="mx-auto mt-4 h-auto w-full max-h-72 rounded-2xl object-cover sm:max-h-72"
       />
 
       <div className="mt-5 space-y-3">
 
         <div className="flex justify-between">
-          <span className="font-semibold">Calories</span>
-          <span className="font-semibold">180 kcal</span>
+          <span className="font-semibold">Risk Level</span>
+          <span className="font-semibold">Low</span>
         </div>
 
         <div className="flex justify-between">
-          <span className="font-semibold">Protein</span>
-          <span className="font-semibold">12g</span>
-        </div>
-
-        <div className="flex justify-between">
-          <span className="font-semibold">Fiber</span>
+          <span className="font-semibold">Added Sugar</span>
           <span className="text-green-600 font-semibold">
-            High ✓
+            Low ✓
+          </span>
+        </div>
+
+        <div className="flex justify-between">
+          <span className="font-semibold">Recommendation</span>
+          <span className="text-green-600 font-semibold">
+            Safe for Diabetes
           </span>
         </div>
 
@@ -277,38 +278,38 @@ function HowItWorks() {
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h3 className="text-lg font-semibold sm:text-xl">
-          Cheeseburger 🍔
+          Sugary Soft Drink
         </h3>
 
         <span className="w-fit rounded-full bg-red-500 px-3 py-2 text-xs font-medium text-white sm:px-4 sm:text-sm">
-          Consume in Moderation
+          High Risk
         </span>
       </div>
 
       <img
-        src={Burger}
-        alt="Burger"
+        src={coco}
+        alt="coco"
         className="mx-auto mt-4 h-auto w-full max-h-64 rounded-2xl object-cover sm:max-h-72"
       />
 
       <div className="mt-5 space-y-3">
 
         <div className="flex justify-between">
-          <span>Calories</span>
-          <span className="font-semibold">850 kcal</span>
+          <span>Risk Level</span>
+          <span className="font-semibold">High</span>
         </div>
 
         <div className="flex justify-between">
-          <span>Fat</span>
+          <span>Sugar Content</span>
           <span className="text-red-600 font-semibold">
-            High ✕
+            Very High ✕
           </span>
         </div>
 
         <div className="flex justify-between">
-          <span>Sodium</span>
+          <span>Recommendation</span>
           <span className="text-red-600 font-semibold">
-            High ✕
+            Avoid Consumption
           </span>
         </div>
 

@@ -1,28 +1,28 @@
 import Header from "../components/Header"
-import {Camera,Search,Flame,Salad,Smartphone,Zap, } from "lucide-react";
+import {Camera,Search,Smartphone,Zap, HeartPulse, ShieldAlert, } from "lucide-react";
 import {Link } from "react-router-dom";
 
 function Features() {
   const features = [
     {
       icon: <Camera size={32}  />,
-      title: "Instant Food Detection",
-      desc: "Upload or capture food images and get instant AI recognition.",
+      title: "Product Scanning",
+      desc: "Scan or upload a packaged food product for instant AI processing.",
     },
     {
       icon: <Search size={32} />,
-      title: "Ingredient Analysis",
-      desc: "Identify ingredients and understand what you're eating.",
+      title: "OCR Ingredient Extraction",
+      desc: "Automatically extracts ingredients and nutrition details from the product label using OCR.",
     },
     {
-      icon: <Flame size={32} />,
-      title: "Calorie Estimation",
-      desc: "Get accurate calorie estimates for better diet tracking.",
+      icon: <HeartPulse size={32} />,
+      title: "Personalized Health Assessment",
+      desc: "Select your health conditions to receive recommendations tailored specifically to you",
     },
     {
-      icon: <Salad size={32} />,
-      title: "Nutrition Breakdown",
-      desc: "View proteins, carbs, fats, vitamins, and more.",
+      icon: <ShieldAlert size={32} />,
+      title: "AI Risk Analysis",
+      desc: "AI evaluates ingredients and highlights potential health risks based on your medical profile.",
     },
     {
       icon: <Smartphone size={32} />,
@@ -49,12 +49,11 @@ function Features() {
 
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mt-6">
           Powerful AI Features for
-          <span className="text-green-500"> Smart Food Detection</span>
+          <span className="text-green-500">Personalized Health Analysis</span>
         </h1>
 
         <p className="text-gray-600 mt-6 max-w-2xl mx-auto text-sm sm:text-base">
-          PureByte uses advanced AI to identify food items, estimate
-          calories, and provide nutritional insights instantly.
+          PureByte combines OCR technology and AI to extract ingredients from packaged food products and generate personalized health recommendations based on your selected medical conditions.
         </p>
       </div>
 

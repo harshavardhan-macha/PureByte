@@ -48,7 +48,7 @@ export const AuthProvider = ({ children }) => {
       }
 
       try {
-        const { data } = await axios.get("/auth/me");
+        const { data } = await axios.get("auth/me");
         setUser(data.user);
       } catch (error) {
         clearToken();
@@ -64,7 +64,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password, remember) => {
     setAuthLoading(true);
     try {
-      const { data } = await axios.post("/auth/login", { email, password });
+      const { data } = await axios.post("auth/login", { email, password });
       saveToken(data.token, remember);
       setUser(data.user);
       setAuthLoading(false);
@@ -81,7 +81,7 @@ export const AuthProvider = ({ children }) => {
   const register = async (name, email, password, remember) => {
     setAuthLoading(true);
     try {
-      const { data } = await axios.post("/auth/register", { name, email, password });
+      const { data } = await axios.post("auth/register", { name, email, password });
       saveToken(data.token, remember);
       setUser(data.user);
       setAuthLoading(false);

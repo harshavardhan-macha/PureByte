@@ -29,9 +29,12 @@ connectDB()
   .then(() => {
     app.listen(PORT, () => {
       console.log(`Auth server running on port ${PORT}`);
+      if (globalThis.__PUREBYTE_FALLBACK_MODE) {
+        console.log("Auth server running in fallback mode without MongoDB");
+      }
     });
   })
   .catch((error) => {
-    console.error("Failed to connect to MongoDB:", error.message);
+    console.error("Failed to start server:", error.message);
     process.exit(1);
   });
