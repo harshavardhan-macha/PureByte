@@ -20,7 +20,7 @@ export default function Header() {
         <div className="flex items-center justify-between gap-4 py-3 sm:py-4">
           <div className="flex min-w-0 items-center gap-3">
             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-green-500 text-xl font-bold text-white">
-              P
+              <img src="src/assets/logo.png"></img>
             </div>
             <div className="min-w-0">
               <p className="truncate text-base font-semibold text-slate-900">PureByte</p>

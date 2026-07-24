@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { Star, Upload } from "lucide-react";
-
+import Header from "../components/Header";
 function ShareExperience() {
   const [rating, setRating] = useState(0);
 
   return (
+    <>
+      <Header />
     <div className="min-h-screen overflow-x-hidden bg-slate-50 px-4 py-8 sm:px-6 sm:py-10">
+
       <div className="mx-auto w-full max-w-xl rounded-3xl border border-green-100 bg-white p-5 shadow-lg sm:p-8">
         <h2 className="text-center text-2xl font-bold sm:text-3xl">
           Share Your <span className="text-green-500">Experience</span>
@@ -101,6 +104,7 @@ function ShareExperience() {
         </form>
       </div>
     </div>
+    </>
   );
 }
 

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "start": "node server.js"
+    "start": "concurrently \"node server.js\" \"cd ../purebyte-backend && uvicorn app.main:app --reload --port 8000\""
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -11,6 +11,10 @@
     "dotenv": "^16.3.1",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.19.3"
+    "mongoose": "^8.19.3",
+    "multer": "^2.2.0"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.3"
   }
 }

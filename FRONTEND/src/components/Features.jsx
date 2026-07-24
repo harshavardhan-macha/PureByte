@@ -3,8 +3,13 @@ import Health from "../assets/Health.png"
 import Analysis from "../assets/Analysis.png"
 import History from "../assets/History.png"
 import { ScanLine, Users, Salad, Target, ArrowRight } from "lucide-react"
+import { Link } from "react-router-dom";
+import { useAuthContext } from "../context/AuthContext";
 
 function Features() {
+  const { isAuthenticated } = useAuthContext();
+  const actionLink = isAuthenticated ? "/scan" : "/login";
+
   return (
     <div className="w-full overflow-x-hidden px-4 py-8 sm:px-6 lg:px-8">
       <h2 className="-mt-1 text-center text-3xl font-bold sm:text-4xl lg:text-5xl">
@@ -95,13 +100,15 @@ function Features() {
           <p className="pb-3 text-sm font-normal sm:text-base">
             Scan your first food and get instatnt Nutrition Results.
           </p>
-          <button
-            type="button"
-            className="flex min-h-11 w-full items-center justify-center gap-2 rounded bg-green-500 px-3 py-2 text-sm font-semibold text-white sm:w-auto"
-          >
-            Get Started
-            <ArrowRight size={20} />
-          </button>
+          <Link to={actionLink} className="w-full sm:w-auto">
+            <button
+              type="button"
+              className="flex min-h-11 w-full items-center justify-center gap-2 rounded bg-green-500 px-3 py-2 text-sm font-semibold text-white sm:w-auto"
+            >
+              Get Started
+              <ArrowRight size={20} />
+            </button>
+          </Link>
         </div>
       </div>
     </div>

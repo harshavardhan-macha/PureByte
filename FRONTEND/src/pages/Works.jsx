@@ -274,15 +274,19 @@ function HowItWorks() {
     </div>
 
     {/* Warning Food Card */}
-    <div className="bg-red-50 border border-red-300 rounded-3xl p-6 hover:scale-101 duration-30">
+    <div className="bg-green-50 border border-green-300 rounded-3xl p-6 hover:scale-101 duration-30">
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h3 className="text-lg font-semibold sm:text-xl">
           Sugary Soft Drink
         </h3>
 
+
         <span className="w-fit rounded-full bg-red-500 px-3 py-2 text-xs font-medium text-white sm:px-4 sm:text-sm">
           High Risk
+=======
+        <span className="w-fit rounded-full bg-green-500 px-3 py-2 text-xs font-medium text-white sm:px-4 sm:text-sm">
+          Consume in Moderation
         </span>
       </div>
 
@@ -300,16 +304,28 @@ function HowItWorks() {
         </div>
 
         <div className="flex justify-between">
+
           <span>Sugar Content</span>
           <span className="text-red-600 font-semibold">
             Very High ✕
+
+          <span>Fat</span>
+          <span className="text-green-600 font-semibold">
+            High ✕
+
           </span>
         </div>
 
         <div className="flex justify-between">
+
           <span>Recommendation</span>
           <span className="text-red-600 font-semibold">
             Avoid Consumption
+
+          <span>Sodium</span>
+          <span className="text-green-600 font-semibold">
+            High ✕
+
           </span>
         </div>
 
@@ -327,7 +343,7 @@ function HowItWorks() {
 
 export default HowItWorks;
 
-// function Works(){
+{/* 
 //     return(
 //         <>
 //         <div className="sm:h-10  h-8 bg-gradient-to-b from-green-200 via-green-100 to-white blur-sm opacity-80"></div>
@@ -335,5 +351,5 @@ export default HowItWorks;
         
 //         </>
 //     );
-// }
-// export default Works;
+// } */}
+{/* export default Works function Works(){ */}

@@ -8,3 +8,9 @@ server/package-lock.json
 server/.env
 FRONTEND/.env
 BACKEND/.env
+server/uploads/
+purebyte-backend/ml/data/*.csv
+purebyte-backend/ml/data/*.tsv
+purebyte-backend/ml/build_dataset_from_off.py
+purebyte-backend/ml/seed_ingredients.py
+purebyte-backend/ml/train_model.py
