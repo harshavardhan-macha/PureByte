@@ -13,7 +13,7 @@ import {
 const router = express.Router();
 
 router.get("/stats", getCommunityStats);
-router.get("/posts", protect, getPosts);
+router.get("/posts", getPosts);
 router.post("/posts", protect, upload.single("image"), createPost);
 router.post("/posts/:id/like", protect, toggleLike);
 router.get("/posts/:id/comments", protect, getComments);

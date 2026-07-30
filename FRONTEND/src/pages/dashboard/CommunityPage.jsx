@@ -69,7 +69,7 @@ export default function CommunityPage() {
 
   const handleCreatePost = async (file, caption) => {
     setSubmitting(true);
-    try {
+    try { 
       let imageInput = file;
       const useCloudinary = Boolean(
         import.meta.env.VITE_CLOUDINARY_CLOUD_NAME && import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET,

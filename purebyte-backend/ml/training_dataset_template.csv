@@ -1,0 +1,6 @@
+ingredients_text,nutriscore_grade,nova_group,code,product_name
+"water, sugar, high fructose corn syrup, natural flavors, salt",d,4,0000000001,Example Soda (risky)
+"water, barley malt, salt, yeast",a,1,0000000002,Example Bread (safe)
+"water, palm oil, sugar, citric acid",c,3,0000000003,Example Snack (ambiguous)
+"water, sugar, unknown, unknown",unknown,,0000000004,Placeholder (dropped)
+"sugar, corn syrup, high fructose corn syrup, artificial flavors, color",e,4,0000000005,Example Sweet Drink (risky)

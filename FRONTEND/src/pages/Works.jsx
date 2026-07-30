@@ -284,7 +284,7 @@ function HowItWorks() {
 
         <span className="w-fit rounded-full bg-red-500 px-3 py-2 text-xs font-medium text-white sm:px-4 sm:text-sm">
           High Risk
-=======
+=======</span>
         <span className="w-fit rounded-full bg-green-500 px-3 py-2 text-xs font-medium text-white sm:px-4 sm:text-sm">
           Consume in Moderation
         </span>
@@ -308,7 +308,7 @@ function HowItWorks() {
           <span>Sugar Content</span>
           <span className="text-red-600 font-semibold">
             Very High ✕
-
+</span>
           <span>Fat</span>
           <span className="text-green-600 font-semibold">
             High ✕
@@ -321,7 +321,7 @@ function HowItWorks() {
           <span>Recommendation</span>
           <span className="text-red-600 font-semibold">
             Avoid Consumption
-
+</span>
           <span>Sodium</span>
           <span className="text-green-600 font-semibold">
             High ✕

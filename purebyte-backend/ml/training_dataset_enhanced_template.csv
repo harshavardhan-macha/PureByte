@@ -1,0 +1,4 @@
+ingredients_text,product_name,product_code,nutriscore_grade,nova_group,nutrition_sugar_g_per_100g,nutrition_sodium_mg_per_100g,allergens_list,flagged_ingredients_json,parsed_ingredients_json,num_ingredients,suspicious_keyword_count,label_overall,label_condition_diabetes,label_condition_hypertension,label_condition_pregnancy
+"water, sugar, high fructose corn syrup, natural flavors, salt","Example Soda","0000000001","d",4,10.5,15.0,"","[{""ingredient"":""high_fructose_corn_syrup"",""severity"":""medium""}]","[""water"",""sugar"",""high fructose corn syrup"",""natural flavors"",""salt""]",5,2,1,1,0,1
+"water, barley malt, salt, yeast","Example Bread","0000000002","a",1,1.2,220.0,"gluten","[]","[""water"",""barley malt"",""salt"",""yeast""]",4,0,0,0,0,0
+"water, palm oil, sugar, citric acid","Example Snack","0000000003","c",3,15.0,120.0,"","[]","[""water"",""palm oil"",""sugar"",""citric acid""]",4,1,0,0,0,0
