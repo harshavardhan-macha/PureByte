@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Heart, MessageCircle, Loader2, Send } from "lucide-react";
+import { Heart, MessageCircle, Loader2, Send, Share2, Bookmark } from "lucide-react";
 import {
   togglePostLike,
   getPostComments,
@@ -115,111 +115,151 @@ export default function CommunityPostCard({ post, onLikeUpdate }) {
 
   return (
     <article
-      className="overflow-hidden rounded-xl border shadow-sm transition hover:shadow-md"
+      className="overflow-hidden rounded-lg border"
       style={{ borderColor: "var(--dash-border)", backgroundColor: "var(--dash-surface)" }}
     >
-      <div className="flex items-center gap-3 px-4 py-3">
-        <Avatar name={post.author?.name} />
-        <div className="min-w-0">
-          <p className="truncate text-sm font-semibold" style={{ color: "var(--dash-text)" }}>
-            {post.author?.name || "User"}
-          </p>
-          <p className="text-xs" style={{ color: "var(--dash-text-muted)" }}>
-            {timeAgo(post.createdAt)}
-          </p>
+      {/* Post Header */}
+      <div className="flex items-center justify-between px-3 py-2">
+        <div className="flex items-center gap-2">
+          <Avatar name={post.author?.name} />
+          <div className="min-w-0">
+            <p className="truncate text-xs font-semibold" style={{ color: "var(--dash-text)" }}>
+              {post.author?.name || "User"}
+            </p>
+          </div>
         </div>
+        <p className="text-xs" style={{ color: "var(--dash-text-muted)" }}>
+          {timeAgo(post.createdAt)}
+        </p>
       </div>
 
+      {/* Post Image */}
       <img
         src={resolveImageUrl(post.imageUrl)}
         alt={post.caption || "Community post"}
         className="aspect-square w-full object-cover"
         loading="lazy"
-      />  
+      />
 
-      <div className="px-4 py-3">
+      {/* Action Buttons */}
+      <div className="flex items-center justify-between px-3 py-2">
         <div className="flex items-center gap-4">
           <button
             type="button"
             onClick={handleLike}
             disabled={likePending}
-            className="inline-flex items-center gap-1.5 text-sm font-medium transition disabled:opacity-50"
-            style={{ color: liked ? "var(--dash-accent-hover)" : "var(--dash-accent)" }}
+            className="inline-flex items-center text-sm font-medium transition disabled:opacity-50 hover:scale-110"
+            style={{ color: liked ? "#ef4444" : "var(--dash-accent)" }}
             aria-label={liked ? "Unlike" : "Like"}
           >
-            <Heart size={20} fill={liked ? "currentColor" : "none"} className="transition-transform active:scale-125" />
-            {likeCount}
+            <Heart size={18} fill={liked ? "currentColor" : "none"} />
           </button>
           <button
             type="button"
             onClick={toggleComments}
-            className="inline-flex items-center gap-1.5 text-sm font-medium"
+            className="inline-flex items-center text-sm font-medium transition hover:scale-110"
             style={{ color: "var(--dash-accent)" }}
           >
-            <MessageCircle size={20} />
-            {commentCount}
+            <MessageCircle size={18} />
+          </button>
+          <button
+            type="button"
+            className="inline-flex items-center text-sm font-medium transition hover:scale-110"
+            style={{ color: "var(--dash-accent)" }}
+          >
+            <Share2 size={18} />
           </button>
         </div>
-
-        {post.caption && (
-          <p className="mt-2 text-sm leading-relaxed" style={{ color: "var(--dash-text)" }}>
-            <span className="font-semibold">{post.author?.name}</span>{" "}
-            {post.caption}
-          </p>
-        )}
-
-        {commentsOpen && (
-          <div className="mt-4 border-t pt-4" style={{ borderColor: "var(--dash-border)" }}>
-            {commentsLoading ? (
-              <div className="flex justify-center py-4">
-                <Loader2 size={20} className="animate-spin" style={{ color: "var(--dash-accent)" }} />
-              </div>
-            ) : comments.length === 0 ? (
-              <p className="py-2 text-center text-xs" style={{ color: "var(--dash-text-muted)" }}>
-                No comments yet — be the first.
-              </p>
-            ) : (
-              <ul className="mb-3 max-h-48 space-y-2 overflow-y-auto">
-                {comments.map((c) => (
-                  <li key={c.id} className="text-sm">
-                    <span className="font-semibold" style={{ color: "var(--dash-text)" }}>
-                      {c.author?.name}
-                    </span>{" "}
-                    <span style={{ color: "var(--dash-text-muted)" }}>{c.text}</span>
-                    <span className="ml-2 text-xs" style={{ color: "var(--dash-text-muted)" }}>
-                      {timeAgo(c.createdAt)}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            )}
-
-            <form onSubmit={handleAddComment} className="flex gap-2">
-              <input
-                type="text"
-                value={commentText}
-                onChange={(e) => setCommentText(e.target.value)}
-                placeholder="Add a comment…"
-                className="min-w-0 flex-1 rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2"
-                style={{ borderColor: "var(--dash-border)" }}
-              />
-              <button
-                type="submit"
-                disabled={commentSubmitting}
-                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-white disabled:opacity-50"
-                style={{ backgroundColor: "var(--dash-accent)" }}
-                aria-label="Send comment"
-              >
-                {commentSubmitting ? (
-                  <Loader2 size={16} className="animate-spin" />
-                ) : (
-                  <Send size={16} />
-                )}
-              </button>
-            </form>
-          </div>
-        )}
+        <button
+          type="button"
+          className="inline-flex items-center text-sm font-medium transition hover:scale-110"
+          style={{ color: "var(--dash-accent)" }}
+        >
+          <Bookmark size={18} />
+        </button>
       </div>
+
+      {/* Likes Count */}
+      <div className="px-3 py-1">
+        <p className="text-xs font-semibold" style={{ color: "var(--dash-text)" }}>
+          {likeCount} {likeCount === 1 ? "like" : "likes"}
+        </p>
+      </div>
+
+      {/* Caption */}
+      {post.caption && (
+        <div className="px-3 py-1">
+          <p className="text-xs leading-relaxed" style={{ color: "var(--dash-text)" }}>
+            <span className="font-semibold">{post.author?.name}</span>{" "}
+            <span className="line-clamp-2">{post.caption}</span>
+          </p>
+        </div>
+      )}
+
+      {/* View Comments Link */}
+      {commentCount > 0 && (
+        <div className="px-3 py-1">
+          <button
+            type="button"
+            onClick={toggleComments}
+            className="text-xs font-medium transition"
+            style={{ color: "var(--dash-text-muted)" }}
+          >
+            View all {commentCount} {commentCount === 1 ? "comment" : "comments"}
+          </button>
+        </div>
+      )}
+
+      {/* Comments Section */}
+      {commentsOpen && (
+        <div className="border-t px-3 py-2" style={{ borderColor: "var(--dash-border)" }}>
+          {commentsLoading ? (
+            <div className="flex justify-center py-2">
+              <Loader2 size={16} className="animate-spin" style={{ color: "var(--dash-accent)" }} />
+            </div>
+          ) : comments.length === 0 ? (
+            <p className="py-2 text-center text-xs" style={{ color: "var(--dash-text-muted)" }}>
+              No comments yet
+            </p>
+          ) : (
+            <ul className="mb-2 max-h-40 space-y-1 overflow-y-auto">
+              {comments.map((c) => (
+                <li key={c.id} className="text-xs">
+                  <span className="font-semibold" style={{ color: "var(--dash-text)" }}>
+                    {c.author?.name}
+                  </span>{" "}
+                  <span style={{ color: "var(--dash-text-muted)" }}>{c.text}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {/* Comment Input */}
+          <form onSubmit={handleAddComment} className="flex gap-2 border-t pt-2" style={{ borderColor: "var(--dash-border)" }}>
+            <input
+              type="text"
+              value={commentText}
+              onChange={(e) => setCommentText(e.target.value)}
+              placeholder="Add a comment…"
+              className="min-w-0 flex-1 rounded-lg border bg-transparent px-2 py-1 text-xs focus:outline-none focus:ring-1"
+              style={{ borderColor: "var(--dash-border)" }}
+            />
+            <button
+              type="submit"
+              disabled={commentSubmitting}
+              className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-white disabled:opacity-50"
+              style={{ backgroundColor: "var(--dash-accent)" }}
+              aria-label="Send comment"
+            >
+              {commentSubmitting ? (
+                <Loader2 size={14} className="animate-spin" />
+              ) : (
+                <Send size={14} />
+              )}
+            </button>
+          </form>
+        </div>
+      )}
     </article>
   );
 }

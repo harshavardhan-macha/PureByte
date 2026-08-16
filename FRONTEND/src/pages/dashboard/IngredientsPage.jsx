@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { Search, Loader2, ChevronRight } from "lucide-react";
 import IngredientDetail from "../../components/dashboard/IngredientDetail";
+import Pagination from "../../components/dashboard/Pagination";
 import { getEffectiveSeverity } from "../../utils/severity";
 import { searchIngredients, getIngredient, getErrorMessage } from "../../lib/mlApi";
 
@@ -38,12 +39,25 @@ export default function IngredientsPage() {
   const [error, setError] = useState("");
   const [selected, setSelected] = useState(null);
 
-  const fetchIngredients = useCallback(async (q, severity) => {
+  // Pagination state
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+
+  const fetchIngredients = useCallback(async (q, severity, pageNum, pageSize) => {
     setLoading(true);
     setError("");
     try {
-      const { data } = await searchIngredients(q, severity || null);
-      setItems(data.items || []);
+      const { data } = await searchIngredients(q, severity || null, pageNum, pageSize);
+      const fetchedItems = data.items || [];
+      setItems(fetchedItems);
+
+      const totalCount = data.total ?? data.count ?? fetchedItems.length;
+      setTotal(totalCount);
+
+      const pages = data.total_pages ?? Math.max(1, Math.ceil(totalCount / pageSize));
+      setTotalPages(pages);
     } catch (err) {
       setError(getErrorMessage(err, "Could not load ingredients."));
     } finally {
@@ -51,9 +65,14 @@ export default function IngredientsPage() {
     }
   }, []);
 
+  // Reset to page 1 on query or filter change
   useEffect(() => {
-    fetchIngredients(debouncedQuery, severityFilter);
-  }, [debouncedQuery, severityFilter, fetchIngredients]);
+    setPage(1);
+  }, [debouncedQuery, severityFilter]);
+
+  useEffect(() => {
+    fetchIngredients(debouncedQuery, severityFilter, page, limit);
+  }, [debouncedQuery, severityFilter, page, limit, fetchIngredients]);
 
   const openDetail = async (name) => {
     try {
@@ -68,6 +87,16 @@ export default function IngredientsPage() {
     }
   };
 
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handlePageSizeChange = (newLimit) => {
+    setLimit(newLimit);
+    setPage(1);
+  };
+
   return (
     <div>
       <div className="page-card p-6 sm:p-7">
@@ -77,40 +106,39 @@ export default function IngredientsPage() {
         </p>
 
         <div className="relative mt-5 w-full max-w-md">
-  <Search 
-    size={18} 
-    className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--dash-text-muted)] pointer-events-none" 
-  />
-  <input
-    type="search"
-    value={query}
-    onChange={(e) => setQuery(e.target.value)}
-    placeholder="Search by name or alias…"
-    className="w-full rounded-xl border border-gray-200 py-3 pl-12 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--dash-accent)] transition-all bg-[var(--dash-bg-surface)] text-[var(--dash-text)]"
-  />
-</div>
+          <Search 
+            size={18} 
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--dash-text-muted)] pointer-events-none" 
+          />
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search by name or alias…"
+            className="w-full rounded-xl border border-gray-200 py-3 pl-12 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--dash-accent)] transition-all bg-[var(--dash-bg-surface)] text-[var(--dash-text)]"
+          />
+        </div>
 
         <div className="mt-3 flex flex-wrap gap-2">
-        {[
-          { id: "", label: "All Risk Levels" },
-          { id: "high", label: "High Risk" },
-          { id: "medium", label: "Medium Risk" },
-          { id: "low", label: "Low Risk" },
-        ].map((chip) => {
-          const isActive = severityFilter === chip.id;
-          return (
-            <button
-              key={chip.id}
-              type="button"
-              onClick={() => setSeverityFilter(chip.id)}
-              className={`pill ${isActive ? "pill-active" : ""}`}
-            >
-              {chip.label}
-            </button>
-          );
-        })}
-      </div>
-
+          {[
+            { id: "", label: "All Risk Levels" },
+            { id: "high", label: "High Risk" },
+            { id: "medium", label: "Medium Risk" },
+            { id: "low", label: "Low Risk" },
+          ].map((chip) => {
+            const isActive = severityFilter === chip.id;
+            return (
+              <button
+                key={chip.id}
+                type="button"
+                onClick={() => setSeverityFilter(chip.id)}
+                className={`pill ${isActive ? "pill-active" : ""}`}
+              >
+                {chip.label}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {error && (
@@ -126,29 +154,40 @@ export default function IngredientsPage() {
       ) : items.length === 0 ? (
         <p className="mt-10 text-center text-sm" style={{ color: "var(--dash-text-muted)" }}>No ingredients match your criteria.</p>
       ) : (
-        <ul className="mt-5 space-y-2">
-          {items.map((item) => {
-            const sev = getEffectiveSeverity(item);
-            return (
-            <li key={item.code || item.name}>
-              <div
-                onClick={() => openDetail(item.name)}
-                className="group flex w-full items-center gap-3 rounded-2xl border border-[var(--dash-border)] bg-[var(--dash-surface)] px-4 py-3 text-left transition hover:-translate-y-0.5 hover:shadow-sm"
-              >
-                <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${severityDot[sev] || severityDot.low}`} />
-                <div className="min-w-0 flex-1">
-                  <p className="truncate font-semibold capitalize" style={{ color: "var(--dash-text)" }}>{item.name}</p>
-                  <p className="truncate text-xs" style={{ color: "var(--dash-text-muted)" }}>{item.reason}</p>
-                </div>
-                <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${severityLabelColor[sev] || severityLabelColor.low}`}>
-                  {sev}
-                </span>
-                <ChevronRight size={16} className="shrink-0" style={{ color: "var(--dash-text-muted)" }} />
-              </div>
-            </li>
-            );
-          })}
-        </ul>
+        <>
+          <ul className="mt-5 space-y-2">
+            {items.map((item) => {
+              const sev = getEffectiveSeverity(item);
+              return (
+                <li key={item.code || item.name}>
+                  <div
+                    onClick={() => openDetail(item.name)}
+                    className="group flex w-full items-center gap-3 rounded-2xl border border-[var(--dash-border)] bg-[var(--dash-surface)] px-4 py-3 text-left transition hover:-translate-y-0.5 hover:shadow-sm cursor-pointer"
+                  >
+                    <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${severityDot[sev] || severityDot.low}`} />
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate font-semibold capitalize" style={{ color: "var(--dash-text)" }}>{item.name}</p>
+                      <p className="truncate text-xs" style={{ color: "var(--dash-text-muted)" }}>{item.reason}</p>
+                    </div>
+                    <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${severityLabelColor[sev] || severityLabelColor.low}`}>
+                      {sev}
+                    </span>
+                    <ChevronRight size={16} className="shrink-0" style={{ color: "var(--dash-text-muted)" }} />
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            totalItems={total}
+            pageSize={limit}
+            onPageChange={handlePageChange}
+            onPageSizeChange={handlePageSizeChange}
+          />
+        </>
       )}
 
       {selected && (

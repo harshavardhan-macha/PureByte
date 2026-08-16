@@ -68,8 +68,15 @@ export const getScanById = (scanId) => mlApi.get(`/api/scan/history/${scanId}`);
 
 export const deleteScan = (scanId) => mlApi.delete(`/api/scan/history/${scanId}`);
 
-export const searchIngredients = (q, severity) =>
-  mlApi.get("/api/ingredients", { params: { ...(q ? { q } : {}), ...(severity ? { severity } : {}) } });
+export const searchIngredients = (q, severity, page = 1, limit = 10) =>
+  mlApi.get("/api/ingredients", {
+    params: {
+      ...(q ? { q } : {}),
+      ...(severity ? { severity } : {}),
+      ...(page ? { page } : {}),
+      ...(limit ? { limit } : {}),
+    },
+  });
 
 export const getIngredient = (name) => mlApi.get(`/api/ingredients/${encodeURIComponent(name)}`);
 

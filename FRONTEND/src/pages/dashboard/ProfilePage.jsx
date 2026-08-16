@@ -77,6 +77,7 @@ export default function ProfilePage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [savingProfile, setSavingProfile] = useState(false);
+  const [activeSection, setActiveSection] = useState("overview");
   const [profile, setProfile] = useState({
     conditions: fallbackConditions,
     allergies: fallbackAllergies,
@@ -93,6 +94,10 @@ export default function ProfilePage() {
   const [allergyInput, setAllergyInput] = useState("");
   const [notesInput, setNotesInput] = useState(profile.notes);
   const [draftNutrition, setDraftNutrition] = useState(fallbackNutrition);
+  const [editingUserData, setEditingUserData] = useState({
+    name: user?.name || "Alex Carter",
+    email: user?.email || "alex@example.com",
+  });
 
   const displayName = user?.name || "Alex Carter";
   const displayEmail = user?.email || "alex@example.com";
@@ -289,6 +294,41 @@ export default function ProfilePage() {
     setGoalsModalOpen(false);
   };
 
+  const handleRemoveCondition = async (conditionId) => {
+    const nextProfile = {
+      ...profile,
+      conditions: profile.conditions.filter((c) => c.id !== conditionId),
+    };
+    await saveProfile(nextProfile);
+  };
+
+  const handleRemoveAllergy = async (allergyId) => {
+    const nextProfile = {
+      ...profile,
+      allergies: profile.allergies.filter((a) => a.id !== allergyId),
+    };
+    await saveProfile(nextProfile);
+  };
+
+  const handleSaveUserInfo = async () => {
+    // In a real app, you'd call an API to update user info
+    // For now, just show a success message
+    showSuccess("User information updated successfully.");
+    setEditingUserData({
+      name: editingUserData.name,
+      email: editingUserData.email,
+    });
+  };
+
+  const navItems = [
+    { id: "overview", label: "Overview", icon: "⌂" },
+    { id: "personal", label: "Personal Info", icon: "👤" },
+    { id: "conditions", label: "Health Conditions", icon: "♡" },
+    { id: "allergies", label: "Allergies", icon: "⚠" },
+    { id: "nutrition", label: "Nutrition Goals", icon: "🍽" },
+    { id: "settings", label: "Settings", icon: "⚙" },
+  ];
+
   const renderHealthFit = (value) => {
     if (value === "good") return <BadgeCheck className="h-4 w-4 text-emerald-600" />;
     if (value === "caution") return <AlertTriangle className="h-4 w-4 text-amber-500" />;
@@ -296,200 +336,527 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="text-sm font-medium uppercase tracking-[0.2em] text-emerald-600">Profile Dashboard</p>
-          <h1 className="mt-1 text-2xl font-semibold text-slate-900">Your health overview</h1>
-          <p className="mt-1 text-sm text-slate-500">A calm summary of your profile, scan history, and nutrition goals.</p>
-        </div>
-        <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-700">
-          <Sparkles size={16} />
-          Personalized insights ready
-        </div>
-      </div>
-
-      <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-        <DashboardCard
-          title="Profile"
-          subtitle="Your account and health snapshot"
-          icon={HeartPulse}
-          action={
-            <button type="button" onClick={() => { setNotesInput(profile.notes); setProfileModalOpen(true); }} className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white px-3 py-2 text-sm font-medium text-emerald-700 transition hover:-translate-y-0.5 hover:shadow-sm">
-              <PencilLine size={15} />
-              Edit profile
-            </button>
-          }
-        >
-          <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
-            <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full border border-emerald-200 bg-emerald-50 text-lg font-semibold text-emerald-700">
-                {displayName.charAt(0).toUpperCase()}
-              </div>
-              <div>
-                <p className="text-lg font-semibold text-slate-900">{displayName}</p>
-                <p className="text-sm text-slate-500">{displayEmail}</p>
-                <p className="mt-1 text-sm text-slate-400">Member since {memberSince}</p>
-              </div>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <span className={pillClass}><Activity size={15} /> {healthSummary.totalScans} scans</span>
-              <span className={pillClass}><BadgeAlert size={15} /> {healthSummary.activeAllergies} allergies</span>
-              <span className={pillClass}><Stethoscope size={15} /> {healthSummary.trackedConditions} conditions</span>
-            </div>
-          </div>
-        </DashboardCard>
-
-        <DashboardCard title="Focus note" subtitle="How your profile is guiding the app" icon={ShieldCheck}>
-          {loading ? (
-            <div className="space-y-3">
-              <SkeletonBlock className="h-4 w-3/4" />
-              <SkeletonBlock className="h-4 w-full" />
-            </div>
-          ) : (
-            <div className="space-y-3 text-sm text-slate-600">
-              <p><span className="font-semibold text-slate-800">Goal:</span> Keep sodium low for your current care plan.</p>
-              <p>{profile.notes}</p>
-              <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-3 text-emerald-700">
-                <p className="font-medium">Care note</p>
-                <p className="mt-1 text-sm">Your guidance is tuned to reduce triggers for {profile.conditions[0]?.name || "your tracked conditions"}.</p>
-              </div>
-            </div>
-          )}
-        </DashboardCard>
-      </div>
-
-      <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-        <DashboardCard
-          title="Health conditions"
-          subtitle="Conditions that shape your nutrition recommendations"
-          icon={HeartPulse}
-          action={<button type="button" onClick={() => setConditionModalOpen(true)} className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-sm font-medium text-emerald-700 transition hover:shadow-sm">+ Add condition</button>}
-        >
-          {loading ? (
-            <div className="flex flex-wrap gap-2">
-              <SkeletonBlock className="h-8 w-24" />
-              <SkeletonBlock className="h-8 w-24" />
-            </div>
-          ) : profile.conditions.length ? (
-            <div className="flex flex-wrap gap-2">
-              {profile.conditions.map((condition) => (
-                <button key={condition.id} type="button" onClick={() => setSelectedChip(condition)} className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-700 transition hover:-translate-y-0.5 hover:shadow-sm">
-                  <span className="mr-2">🩺</span>
-                  {condition.name}
-                </button>
-              ))}
-            </div>
-          ) : (
-            <div className="rounded-2xl border border-dashed border-emerald-200 bg-emerald-50/70 p-6 text-center text-sm text-slate-600">
-              <p className="font-semibold text-slate-800">No conditions tracked yet</p>
-              <p className="mt-1">Add conditions to improve scan guidance.</p>
-            </div>
-          )}
-        </DashboardCard>
-
-        <DashboardCard
-          title="Allergies"
-          subtitle="Color-coded by severity"
-          icon={AlertTriangle}
-          action={<button type="button" onClick={() => setAllergyModalOpen(true)} className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-sm font-medium text-emerald-700 transition hover:shadow-sm">+ Add allergy</button>}
-        >
-          {loading ? (
-            <div className="flex flex-wrap gap-2">
-              <SkeletonBlock className="h-8 w-24" />
-              <SkeletonBlock className="h-8 w-24" />
-            </div>
-          ) : profile.allergies.length ? (
-            <div className="flex flex-wrap gap-2">
-              {profile.allergies.map((allergy) => (
-                <button key={allergy.id} type="button" onClick={() => setSelectedChip(allergy)} className={`rounded-full border px-3 py-2 text-sm font-medium transition hover:-translate-y-0.5 hover:shadow-sm ${allergy.severity === "severe" ? "border-rose-200 bg-rose-50 text-rose-700" : allergy.severity === "moderate" ? "border-amber-200 bg-amber-50 text-amber-700" : "border-emerald-200 bg-emerald-50 text-emerald-700"}`}>
-                  <span className="mr-2">🥜</span>
-                  {allergy.name}
-                </button>
-              ))}
-            </div>
-          ) : (
-            <div className="rounded-2xl border border-dashed border-emerald-200 bg-emerald-50/70 p-6 text-center text-sm text-slate-600">
-              <p className="font-semibold text-slate-800">No allergies logged yet</p>
-              <p className="mt-1">Add allergies to keep warnings more precise.</p>
-            </div>
-          )}
-        </DashboardCard>
-      </div>
-
-      <DashboardCard
-        title="Recent scans"
-        subtitle="Your latest food analysis results"
-        icon={CalendarDays}
-        action={<button type="button" onClick={() => navigate("/history")} className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-sm font-medium text-emerald-700 transition hover:shadow-sm">View all scans</button>}
-      >
-        {loading ? (
-          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-            <SkeletonBlock className="h-20 w-full" />
-            <SkeletonBlock className="h-20 w-full" />
-            <SkeletonBlock className="h-20 w-full" />
-          </div>
-        ) : scannedItems.length ? (
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {scannedItems.map((item) => (
-              <button key={item.id} type="button" onClick={() => navigate("/history")} className="rounded-2xl border border-emerald-100 bg-emerald-50/70 p-4 text-left transition hover:-translate-y-0.5 hover:shadow-sm">
-                <div className="flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-emerald-700">
-                      <Apple size={18} />
-                    </div>
-                    <div>
-                      <p className="font-semibold text-slate-800">{item.name}</p>
-                      <p className="text-sm text-slate-500">{item.brand}</p>
-                    </div>
-                  </div>
-                  {renderHealthFit(item.healthFit)}
-                </div>
-                <p className="mt-3 text-sm text-slate-500">Scanned {item.scannedAt}</p>
+    <div className="overflow-hidden rounded-[26px] border border-[#dfece2] bg-[#f4faf5] shadow-[0_0_0_1px_rgba(19,122,74,0.04)]">
+      <div className="grid gap-0 lg:grid-cols-[220px_minmax(0,1fr)]">
+        <aside className="border-b border-[#dfece2] bg-[#f7faf7] p-5 lg:border-b-0 lg:border-r">
+          <nav className="space-y-2">
+            {navItems.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => setActiveSection(item.id)}
+                className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-[15px] font-medium transition ${
+                  activeSection === item.id
+                    ? "bg-[#e7f6ed] text-[#1b7b51] shadow-[inset_0_0_0_1px_rgba(19,122,74,0.12)]"
+                    : "text-[#3d564d] hover:bg-white/80"
+                }`}
+              >
+                <span className="flex h-5 w-5 items-center justify-center text-base">{item.icon}</span>
+                <span>{item.label}</span>
               </button>
             ))}
-          </div>
-        ) : (
-          <div className="rounded-2xl border border-dashed border-emerald-200 bg-emerald-50/70 p-6 text-center text-sm text-slate-600">
-            <p className="font-semibold text-slate-800">No scans yet</p>
-            <p className="mt-1">Scan a meal to build your personal history.</p>
-          </div>
-        )}
-      </DashboardCard>
+          </nav>
 
-      <DashboardCard
-        title="Nutrition profile"
-        subtitle="Daily targets vs. your current averages"
-        icon={Flame}
-        action={<button type="button" onClick={() => { setDraftNutrition(nutrition); setGoalsModalOpen(true); }} className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-sm font-medium text-emerald-700 transition hover:shadow-sm">Goals</button>}
-      >
-        <div className="space-y-4">
-          <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-sm text-emerald-700">
-            <p className="font-semibold">Nutrition note</p>
-            <p className="mt-1">Sodium target is slightly lower because your profile includes hypertension-related care guidance.</p>
+          <div className="mt-8 rounded-2xl border border-[#dfece2] bg-[#f3faf5] p-4 text-sm text-[#3d564d]">
+            <p className="mb-2 font-semibold text-[#244e3d]">Need Help?</p>
+            <p className="leading-6 text-[#526d62]">Visit our help center for guides and support.</p>
+            <button type="button" className="mt-4 inline-flex items-center gap-2 rounded-full border border-[#d1e7d6] bg-white px-3 py-2 text-sm font-medium text-[#1b7b51]">
+              Help Center →
+            </button>
           </div>
+        </aside>
 
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {nutritionItems.map((item) => {
-              const percent = Math.min(100, Math.round((item.current / item.target) * 100));
-              const color = item.flagged ? "bg-rose-500" : item.accent === "sky" ? "bg-sky-500" : item.accent === "amber" ? "bg-amber-500" : "bg-emerald-500";
-              return (
-                <div key={item.key} className="rounded-2xl border border-emerald-100 bg-white p-4">
-                  <div className="flex items-center justify-between">
-                    <p className="font-semibold text-slate-800">{item.label}</p>
-                    {item.flagged ? <BadgeAlert size={16} className="text-rose-500" /> : <CheckCircle2 size={16} className="text-emerald-500" />}
+        <div className="p-6 sm:p-7 xl:p-8">
+          {/* Header Section */}
+          {activeSection === "overview" && (
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#3b986d]">Profile Dashboard</p>
+                <h1 className="mt-2 text-[2rem] font-semibold tracking-[-0.04em] text-[#1e2d27]">Your health overview</h1>
+                <p className="mt-2 text-[15px] text-[#60756b]">A calm summary of your profile, scan history, and nutrition goals.</p>
+              </div>
+              <div className="inline-flex items-center gap-2 self-start rounded-full border border-[#cfe9d9] bg-[#ebf8f0] px-3 py-2 text-[15px] font-medium text-[#1a7d51]">
+                <Sparkles size={16} />
+                Personalized insights ready
+              </div>
+            </div>
+          )}
+
+          {activeSection === "personal" && (
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#3b986d]">Profile Settings</p>
+              <h1 className="mt-2 text-[2rem] font-semibold tracking-[-0.04em] text-[#1e2d27]">Personal Information</h1>
+              <p className="mt-2 text-[15px] text-[#60756b]">Update and manage your account details.</p>
+            </div>
+          )}
+
+          {activeSection === "conditions" && (
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#3b986d]">Health Management</p>
+              <h1 className="mt-2 text-[2rem] font-semibold tracking-[-0.04em] text-[#1e2d27]">Health Conditions</h1>
+              <p className="mt-2 text-[15px] text-[#60756b]">Track and manage your medical conditions for personalized nutrition guidance.</p>
+            </div>
+          )}
+
+          {activeSection === "allergies" && (
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#3b986d]">Safety First</p>
+              <h1 className="mt-2 text-[2rem] font-semibold tracking-[-0.04em] text-[#1e2d27]">Allergies & Intolerances</h1>
+              <p className="mt-2 text-[15px] text-[#60756b]">Keep detailed records of your allergies to stay safe while eating.</p>
+            </div>
+          )}
+
+          {activeSection === "nutrition" && (
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#3b986d]">Wellness Goals</p>
+              <h1 className="mt-2 text-[2rem] font-semibold tracking-[-0.04em] text-[#1e2d27]">Nutrition Goals</h1>
+              <p className="mt-2 text-[15px] text-[#60756b]">Set and monitor your daily nutrition targets.</p>
+            </div>
+          )}
+
+          {activeSection === "settings" && (
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#3b986d]">Configuration</p>
+              <h1 className="mt-2 text-[2rem] font-semibold tracking-[-0.04em] text-[#1e2d27]">Account Settings</h1>
+              <p className="mt-2 text-[15px] text-[#60756b]">Manage your preferences and account security.</p>
+            </div>
+          )}
+
+          {/* Overview Section */}
+          {activeSection === "overview" && (
+            <>
+              <div className="mt-6 grid gap-5 xl:grid-cols-[1.25fr_0.95fr]">
+                <section className="rounded-[22px] border border-[#dfece2] bg-[#f2fbf4] p-5 shadow-sm">
+                  <div className="mb-5 flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2">
+                      <HeartPulse size={18} className="text-[#2a8a5d]" />
+                      <h2 className="text-[20px] font-semibold text-[#1d2d27]">Profile</h2>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => { setNotesInput(profile.notes); setProfileModalOpen(true); }}
+                      className="inline-flex items-center gap-2 rounded-full border border-[#cfe8d8] bg-white px-3 py-2 text-sm font-medium text-[#1b7b51] transition hover:-translate-y-0.5 hover:shadow-sm"
+                    >
+                      <PencilLine size={15} />
+                      Edit profile
+                    </button>
                   </div>
-                  <p className="mt-2 text-sm text-slate-500">{item.current} / {item.target} {item.unit}</p>
-                  <div className="mt-3 h-2 rounded-full bg-emerald-100">
-                    <div className={`h-2 rounded-full ${color}`} style={{ width: `${percent}%` }} />
+
+                  <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="flex h-14.5 w-14.5 items-center justify-center rounded-full border border-[#dceee2] bg-[#e8f7ee] text-[22px] font-semibold text-[#1a7d51]">
+                        {displayName.charAt(0).toUpperCase()}
+                      </div>
+                      <div>
+                        <p className="text-[21px] font-semibold text-[#1d2d27]">{displayName}</p>
+                        <p className="text-[15px] text-[#5d7268]">{displayEmail}</p>
+                        <p className="mt-1 text-[13px] text-[#7d8c83]">Member since {memberSince}</p>
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <span className={pillClass}><Activity size={15} /> {healthSummary.totalScans} scans</span>
+                      <span className={pillClass}><BadgeAlert size={15} /> {healthSummary.activeAllergies} allergies</span>
+                      <span className={pillClass}><Stethoscope size={15} /> {healthSummary.trackedConditions} conditions</span>
+                    </div>
                   </div>
-                  <p className="mt-2 text-xs text-slate-400">{percent}% of target</p>
+                </section>
+
+                <section className="rounded-[22px] border border-[#dfece2] bg-[#f2fbf4] p-5 shadow-sm">
+                  <div className="mb-3 flex items-center gap-2">
+                    <ShieldCheck size={18} className="text-[#2a8a5d]" />
+                    <h2 className="text-[20px] font-semibold text-[#1d2d27]">Focus note</h2>
+                  </div>
+                  <p className="text-[15px] text-[#4f665f]">How your profile is guiding the app</p>
+
+                  {loading ? (
+                    <div className="mt-5 space-y-3">
+                      <SkeletonBlock className="h-4 w-3/4" />
+                      <SkeletonBlock className="h-4 w-full" />
+                    </div>
+                  ) : (
+                    <div className="mt-5 space-y-4 text-[15px] text-[#3d564d]">
+                      <p><span className="font-semibold text-[#1d2d27]">Goal:</span> Keep sodium low for your current care plan.</p>
+                      <p>{profile.notes}</p>
+                      <div className="rounded-2xl border border-[#d2ecd9] bg-[#e9f7ee] p-3 text-[#1a7d51]">
+                        <p className="font-medium">Care note</p>
+                        <p className="mt-1 text-[14px]">Your guidance is tuned to reduce triggers for {profile.conditions[0]?.name || "your tracked conditions"}.</p>
+                      </div>
+                    </div>
+                  )}
+                </section>
+              </div>
+
+              <div className="mt-5 grid gap-5 xl:grid-cols-[1.1fr_0.9fr]">
+                <section className="rounded-[22px] border border-[#dfece2] bg-[#f2fbf4] p-5 shadow-sm">
+                  <div className="mb-4 flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <HeartPulse size={18} className="text-[#2a8a5d]" />
+                      <h2 className="text-[20px] font-semibold text-[#1d2d27]">Health conditions</h2>
+                    </div>
+                    <button type="button" onClick={() => setConditionModalOpen(true)} className="rounded-full border border-[#cfe8d8] bg-[#ebf8f0] px-3 py-1.5 text-sm font-medium text-[#1b7b51] transition hover:shadow-sm">+ Add condition</button>
+                  </div>
+                  <p className="text-[15px] text-[#5d7268]">Conditions that shape your nutrition recommendations</p>
+
+                  {loading ? (
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      <SkeletonBlock className="h-8 w-24" />
+                      <SkeletonBlock className="h-8 w-24" />
+                    </div>
+                  ) : profile.conditions.length ? (
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {profile.conditions.map((condition) => (
+                        <div key={condition.id} className="group relative">
+                          <button type="button" onClick={() => setSelectedChip(condition)} className="rounded-full border border-[#d4ead8] bg-[#ebf8f0] px-3 py-2 text-sm font-medium text-[#1b7b51] transition hover:-translate-y-0.5 hover:shadow-sm">
+                            <span className="mr-2">🩺</span>
+                            {condition.name}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveCondition(condition.id)}
+                            className="absolute -right-2 -top-2 hidden rounded-full bg-red-500 p-1 text-white transition group-hover:flex hover:bg-red-600"
+                          >
+                            <X size={14} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="mt-4 rounded-2xl border border-dashed border-[#cfe8d8] bg-[#eef9f2] p-6 text-center text-sm text-[#526d62]">
+                      <p className="font-semibold text-[#1d2d27]">No conditions tracked yet</p>
+                      <p className="mt-1">Add conditions to improve scan guidance.</p>
+                    </div>
+                  )}
+                </section>
+
+                <section className="rounded-[22px] border border-[#dfece2] bg-[#f2fbf4] p-5 shadow-sm">
+                  <div className="mb-4 flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <AlertTriangle size={18} className="text-[#2a8a5d]" />
+                      <h2 className="text-[20px] font-semibold text-[#1d2d27]">Allergies</h2>
+                    </div>
+                    <button type="button" onClick={() => setAllergyModalOpen(true)} className="rounded-full border border-[#cfe8d8] bg-[#ebf8f0] px-3 py-1.5 text-sm font-medium text-[#1b7b51] transition hover:shadow-sm">+ Add allergy</button>
+                  </div>
+                  <p className="text-[15px] text-[#5d7268]">Color-coded by severity</p>
+
+                  {loading ? (
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      <SkeletonBlock className="h-8 w-24" />
+                      <SkeletonBlock className="h-8 w-24" />
+                    </div>
+                  ) : profile.allergies.length ? (
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {profile.allergies.map((allergy) => (
+                        <div key={allergy.id} className="group relative">
+                          <button type="button" onClick={() => setSelectedChip(allergy)} className={`rounded-full border px-3 py-2 text-sm font-medium transition hover:-translate-y-0.5 hover:shadow-sm ${allergy.severity === "severe" ? "border-[#f0c7c7] bg-[#fef2f2] text-[#c75b5b]" : allergy.severity === "moderate" ? "border-[#f2d8be] bg-[#fff7ed] text-[#b8702d]" : "border-[#d4ead8] bg-[#ebf8f0] text-[#1b7b51]"}`}>
+                            <span className="mr-2">{allergy.severity === "severe" ? "🥜" : "🌿"}</span>
+                            {allergy.name}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveAllergy(allergy.id)}
+                            className="absolute -right-2 -top-2 hidden rounded-full bg-red-500 p-1 text-white transition group-hover:flex hover:bg-red-600"
+                          >
+                            <X size={14} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="mt-4 rounded-2xl border border-dashed border-[#cfe8d8] bg-[#eef9f2] p-6 text-center text-sm text-[#526d62]">
+                      <p className="font-semibold text-[#1d2d27]">No allergies logged yet</p>
+                      <p className="mt-1">Add allergies to keep warnings more precise.</p>
+                    </div>
+                  )}
+                </section>
+              </div>
+
+              <section className="mt-5 rounded-[22px] border border-[#dfece2] bg-[#f2fbf4] p-5 shadow-sm">
+                <div className="mb-4 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    <CalendarDays size={18} className="text-[#2a8a5d]" />
+                    <h2 className="text-[20px] font-semibold text-[#1d2d27]">Recent scans</h2>
+                  </div>
+                  <button type="button" onClick={() => navigate("/history")} className="rounded-full border border-[#cfe8d8] bg-[#ebf8f0] px-3 py-1.5 text-sm font-medium text-[#1b7b51] transition hover:shadow-sm">View all scans</button>
                 </div>
-              );
-            })}
-          </div>
+                <p className="text-[15px] text-[#5d7268]">Your latest food analysis results</p>
+
+                {loading ? (
+                  <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                    <SkeletonBlock className="h-20 w-full" />
+                    <SkeletonBlock className="h-20 w-full" />
+                    <SkeletonBlock className="h-20 w-full" />
+                    <SkeletonBlock className="h-20 w-full" />
+                  </div>
+                ) : scannedItems.length ? (
+                  <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+                    {scannedItems.map((item) => (
+                      <button key={item.id} type="button" onClick={() => navigate("/history")} className="rounded-[18px] border border-[#d2ecd9] bg-[#ecfaf1] p-4 text-left transition hover:-translate-y-0.5 hover:shadow-sm">
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-[#1a7d51]">
+                            <Apple size={16} />
+                          </div>
+                          {renderHealthFit(item.healthFit)}
+                        </div>
+                        <p className="mt-3 text-[14px] font-semibold text-[#1d2d27]">{item.name}</p>
+                        <p className="mt-1 text-[12px] text-[#60756b]">{item.brand}</p>
+                        <p className="mt-4 text-[12px] text-[#60756b]">Scanned {item.scannedAt}</p>
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="mt-4 rounded-2xl border border-dashed border-[#cfe8d8] bg-[#eef9f2] p-6 text-center text-sm text-[#526d62]">
+                    <p className="font-semibold text-[#1d2d27]">No scans yet</p>
+                    <p className="mt-1">Scan a meal to build your personal history.</p>
+                  </div>
+                )}
+              </section>
+
+              <section className="mt-5 rounded-[22px] border border-[#dfece2] bg-[#f2fbf4] p-5 shadow-sm">
+                <div className="mb-4 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    <Flame size={18} className="text-[#2a8a5d]" />
+                    <h2 className="text-[20px] font-semibold text-[#1d2d27]">Nutrition profile</h2>
+                  </div>
+                  <button type="button" onClick={() => { setDraftNutrition(nutrition); setGoalsModalOpen(true); }} className="rounded-full border border-[#cfe8d8] bg-[#ebf8f0] px-3 py-1.5 text-sm font-medium text-[#1b7b51] transition hover:shadow-sm">Goals</button>
+                </div>
+                <p className="text-[15px] text-[#5d7268]">Daily targets vs. your current averages</p>
+
+                <div className="mt-4 rounded-[18px] border border-[#d2ecd9] bg-[#ecfaf1] p-4 text-[15px] text-[#1a7d51]">
+                  <p className="font-semibold">Nutrition note</p>
+                  <p className="mt-1">Sodium target is slightly lower because your profile includes hypertension-related care guidance.</p>
+                </div>
+
+                <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+                  {nutritionItems.map((item) => {
+                    const percent = Math.min(100, Math.round((item.current / item.target) * 100));
+                    const color = item.flagged ? "bg-rose-500" : item.accent === "sky" ? "bg-sky-500" : item.accent === "amber" ? "bg-amber-500" : "bg-emerald-500";
+                    return (
+                      <div key={item.key} className="rounded-[18px] border border-[#d2ecd9] bg-white p-4">
+                        <div className="flex items-center justify-between">
+                          <p className="font-semibold text-[#1d2d27]">{item.label}</p>
+                          {item.flagged ? <BadgeAlert size={16} className="text-rose-500" /> : <CheckCircle2 size={16} className="text-emerald-500" />}
+                        </div>
+                        <p className="mt-2 text-[13px] text-[#5d7268]">{item.current} / {item.target} {item.unit}</p>
+                        <div className="mt-3 h-2 rounded-full bg-[#ebf8f0]">
+                          <div className={`h-2 rounded-full ${color}`} style={{ width: `${percent}%` }} />
+                        </div>
+                        <p className="mt-2 text-[11px] text-[#7d8c83]">{percent}% of target</p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </section>
+            </>
+          )}
+
+          {/* Personal Info Section */}
+          {activeSection === "personal" && (
+            <div className="mt-6">
+              <section className="rounded-[22px] border border-[#dfece2] bg-[#f2fbf4] p-5 shadow-sm">
+                <h2 className="mb-6 text-[20px] font-semibold text-[#1d2d27]">Account Information</h2>
+                <div className="space-y-4">
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-[#1d2d27]">Full Name</label>
+                    <input
+                      type="text"
+                      value={editingUserData.name}
+                      onChange={(e) => setEditingUserData({ ...editingUserData, name: e.target.value })}
+                      className="w-full rounded-xl border border-[#d4ead8] bg-white px-4 py-2 text-[#1d2d27] outline-none focus:border-[#1b7b51]"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-[#1d2d27]">Email Address</label>
+                    <input
+                      type="email"
+                      value={editingUserData.email}
+                      onChange={(e) => setEditingUserData({ ...editingUserData, email: e.target.value })}
+                      className="w-full rounded-xl border border-[#d4ead8] bg-white px-4 py-2 text-[#1d2d27] outline-none focus:border-[#1b7b51]"
+                    />
+                  </div>
+                  <div className="flex justify-end gap-3 pt-4">
+                    <button type="button" className="rounded-full border border-[#cfe8d8] px-4 py-2 text-sm font-medium text-[#1b7b51]">Cancel</button>
+                    <button type="button" onClick={handleSaveUserInfo} className="inline-flex items-center gap-2 rounded-full bg-[#1b7b51] px-4 py-2 text-sm font-semibold text-white">
+                      <Save size={16} />
+                      Save Changes
+                    </button>
+                  </div>
+                </div>
+              </section>
+            </div>
+          )}
+
+          {/* Health Conditions Section */}
+          {activeSection === "conditions" && (
+            <div className="mt-6">
+              <section className="rounded-[22px] border border-[#dfece2] bg-[#f2fbf4] p-5 shadow-sm">
+                <div className="mb-6 flex items-center justify-between">
+                  <h2 className="text-[20px] font-semibold text-[#1d2d27]">Your Conditions</h2>
+                  <button type="button" onClick={() => setConditionModalOpen(true)} className="rounded-full border border-[#cfe8d8] bg-[#ebf8f0] px-4 py-2 text-sm font-medium text-[#1b7b51] transition hover:shadow-sm">+ Add Condition</button>
+                </div>
+
+                {loading ? (
+                  <div className="space-y-3">
+                    <SkeletonBlock className="h-20 w-full" />
+                    <SkeletonBlock className="h-20 w-full" />
+                  </div>
+                ) : profile.conditions.length ? (
+                  <div className="space-y-3">
+                    {profile.conditions.map((condition) => (
+                      <div key={condition.id} className="flex items-center justify-between rounded-xl border border-[#d4ead8] bg-white p-4">
+                        <div>
+                          <p className="font-semibold text-[#1d2d27]">🩺 {condition.name}</p>
+                          <p className="mt-1 text-sm text-[#5d7268]">Added on {new Date(condition.addedOn).toLocaleDateString()}</p>
+                          <p className="mt-1 text-sm font-medium capitalize text-[#1b7b51]">Severity: {condition.severity}</p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveCondition(condition.id)}
+                          className="rounded-full bg-red-100 p-2 text-red-600 transition hover:bg-red-200"
+                        >
+                          <X size={20} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="rounded-2xl border border-dashed border-[#cfe8d8] bg-[#eef9f2] p-8 text-center">
+                    <p className="font-semibold text-[#1d2d27]">No conditions tracked yet</p>
+                    <p className="mt-2 text-[#5d7268]">Add health conditions to get better nutrition recommendations.</p>
+                  </div>
+                )}
+              </section>
+            </div>
+          )}
+
+          {/* Allergies Section */}
+          {activeSection === "allergies" && (
+            <div className="mt-6">
+              <section className="rounded-[22px] border border-[#dfece2] bg-[#f2fbf4] p-5 shadow-sm">
+                <div className="mb-6 flex items-center justify-between">
+                  <h2 className="text-[20px] font-semibold text-[#1d2d27]">Your Allergies</h2>
+                  <button type="button" onClick={() => setAllergyModalOpen(true)} className="rounded-full border border-[#cfe8d8] bg-[#ebf8f0] px-4 py-2 text-sm font-medium text-[#1b7b51] transition hover:shadow-sm">+ Add Allergy</button>
+                </div>
+
+                {loading ? (
+                  <div className="space-y-3">
+                    <SkeletonBlock className="h-20 w-full" />
+                    <SkeletonBlock className="h-20 w-full" />
+                  </div>
+                ) : profile.allergies.length ? (
+                  <div className="space-y-3">
+                    {profile.allergies.map((allergy) => (
+                      <div key={allergy.id} className={`flex items-center justify-between rounded-xl border p-4 ${allergy.severity === "severe" ? "border-[#f0c7c7] bg-[#fef2f2]" : allergy.severity === "moderate" ? "border-[#f2d8be] bg-[#fff7ed]" : "border-[#d4ead8] bg-[#ebf8f0]"}`}>
+                        <div>
+                          <p className={`font-semibold ${allergy.severity === "severe" ? "text-[#c75b5b]" : allergy.severity === "moderate" ? "text-[#b8702d]" : "text-[#1b7b51]"}`}>
+                            {allergy.severity === "severe" ? "🥜" : "🌿"} {allergy.name}
+                          </p>
+                          <p className="mt-1 text-sm">Added on {new Date(allergy.addedOn).toLocaleDateString()}</p>
+                          <p className={`mt-1 text-sm font-medium capitalize ${allergy.severity === "severe" ? "text-[#c75b5b]" : allergy.severity === "moderate" ? "text-[#b8702d]" : "text-[#1b7b51]"}`}>
+                            Severity: {allergy.severity}
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveAllergy(allergy.id)}
+                          className="rounded-full bg-red-100 p-2 text-red-600 transition hover:bg-red-200"
+                        >
+                          <X size={20} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="rounded-2xl border border-dashed border-[#cfe8d8] bg-[#eef9f2] p-8 text-center">
+                    <p className="font-semibold text-[#1d2d27]">No allergies logged yet</p>
+                    <p className="mt-2 text-[#5d7268]">Add allergies to keep warnings more precise while scanning foods.</p>
+                  </div>
+                )}
+              </section>
+            </div>
+          )}
+
+          {/* Nutrition Goals Section */}
+          {activeSection === "nutrition" && (
+            <div className="mt-6">
+              <section className="rounded-[22px] border border-[#dfece2] bg-[#f2fbf4] p-5 shadow-sm">
+                <div className="mb-6 flex items-center justify-between">
+                  <h2 className="text-[20px] font-semibold text-[#1d2d27]">Daily Nutrition Targets</h2>
+                  <button type="button" onClick={() => { setDraftNutrition(nutrition); setGoalsModalOpen(true); }} className="rounded-full border border-[#cfe8d8] bg-[#ebf8f0] px-4 py-2 text-sm font-medium text-[#1b7b51] transition hover:shadow-sm">Edit Goals</button>
+                </div>
+
+                {loading ? (
+                  <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+                    <SkeletonBlock className="h-24 w-full" />
+                    <SkeletonBlock className="h-24 w-full" />
+                    <SkeletonBlock className="h-24 w-full" />
+                    <SkeletonBlock className="h-24 w-full" />
+                    <SkeletonBlock className="h-24 w-full" />
+                  </div>
+                ) : (
+                  <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+                    {nutritionItems.map((item) => {
+                      const percent = Math.min(100, Math.round((item.current / item.target) * 100));
+                      const color = item.flagged ? "bg-rose-500" : item.accent === "sky" ? "bg-sky-500" : item.accent === "amber" ? "bg-amber-500" : "bg-emerald-500";
+                      return (
+                        <div key={item.key} className="rounded-[18px] border border-[#d2ecd9] bg-white p-4">
+                          <div className="flex items-center justify-between">
+                            <p className="font-semibold text-[#1d2d27]">{item.label}</p>
+                            {item.flagged ? <BadgeAlert size={16} className="text-rose-500" /> : <CheckCircle2 size={16} className="text-emerald-500" />}
+                          </div>
+                          <p className="mt-2 text-[13px] text-[#5d7268]">{item.current} / {item.target} {item.unit}</p>
+                          <div className="mt-3 h-2 rounded-full bg-[#ebf8f0]">
+                            <div className={`h-2 rounded-full ${color}`} style={{ width: `${percent}%` }} />
+                          </div>
+                          <p className="mt-2 text-[11px] text-[#7d8c83]">{percent}% of target</p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </section>
+            </div>
+          )}
+
+          {/* Settings Section */}
+          {activeSection === "settings" && (
+            <div className="mt-6">
+              <section className="rounded-[22px] border border-[#dfece2] bg-[#f2fbf4] p-5 shadow-sm">
+                <h2 className="mb-6 text-[20px] font-semibold text-[#1d2d27]">Account Settings</h2>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between rounded-xl border border-[#d4ead8] bg-white p-4">
+                    <div>
+                      <p className="font-semibold text-[#1d2d27]">Notifications</p>
+                      <p className="mt-1 text-sm text-[#5d7268]">Receive alerts about food scans and nutrition updates</p>
+                    </div>
+                    <input type="checkbox" defaultChecked className="h-5 w-5 rounded border-[#cfe8d8] text-[#1b7b51]" />
+                  </div>
+                  <div className="flex items-center justify-between rounded-xl border border-[#d4ead8] bg-white p-4">
+                    <div>
+                      <p className="font-semibold text-[#1d2d27]">Data Sync</p>
+                      <p className="mt-1 text-sm text-[#5d7268]">Automatically sync your health data across devices</p>
+                    </div>
+                    <input type="checkbox" defaultChecked className="h-5 w-5 rounded border-[#cfe8d8] text-[#1b7b51]" />
+                  </div>
+                  <div className="flex items-center justify-between rounded-xl border border-[#d4ead8] bg-white p-4">
+                    <div>
+                      <p className="font-semibold text-[#1d2d27]">Two-Factor Authentication</p>
+                      <p className="mt-1 text-sm text-[#5d7268]">Add an extra layer of security to your account</p>
+                    </div>
+                    <button type="button" className="rounded-full border border-[#cfe8d8] bg-[#ebf8f0] px-3 py-1 text-sm font-medium text-[#1b7b51]">Enable</button>
+                  </div>
+                  <div className="mt-6 flex items-center justify-between rounded-xl border border-[#f0c7c7] bg-[#fef2f2] p-4">
+                    <div>
+                      <p className="font-semibold text-[#c75b5b]">Danger Zone</p>
+                      <p className="mt-1 text-sm text-[#c75b5b]">Delete your account and all associated data</p>
+                    </div>
+                    <button type="button" className="rounded-full border border-[#f0c7c7] bg-[#fef2f2] px-3 py-1 text-sm font-medium text-[#c75b5b] hover:bg-[#f9e5e5]">Delete Account</button>
+                  </div>
+                </div>
+              </section>
+            </div>
+          )}
         </div>
-      </DashboardCard>
+      </div>
 
       {selectedChip ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4">

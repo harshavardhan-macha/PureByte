@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends
+import math
+from fastapi import APIRouter, Depends, Query
 from app.auth import get_current_user
 # Import your ingredients collection
 from app.database import users_collection, ingredients_collection 
@@ -9,8 +10,13 @@ router = APIRouter(prefix="/api", tags=["ingredients"])
 
 
 @router.get("/ingredients")
-def list_ingredients(q: str = None, severity: str = None):
-    """Frontend: /ingredients browse page. Optional ?q= search from MongoDB."""
+def list_ingredients(
+    q: str = None,
+    severity: str = None,
+    page: int = Query(default=1, ge=1),
+    limit: int = Query(default=10, ge=1, le=100),
+):
+    """Frontend: /ingredients browse page. Optional ?q= search, ?severity=, ?page=, ?limit= from MongoDB."""
     query = {}
 
     if q:
@@ -23,11 +29,22 @@ def list_ingredients(q: str = None, severity: str = None):
     if severity and severity in ("high", "medium", "low"):
         query["severity"] = severity
     
+    total = ingredients_collection.count_documents(query)
+    skip = (page - 1) * limit
+
     # Fetch from MongoDB (excluding the MongoDB '_id' field so FastAPI can serialize it cleanly)
-    cursor = ingredients_collection.find(query, {"_id": 0})
+    cursor = ingredients_collection.find(query, {"_id": 0}).skip(skip).limit(limit)
     items = list(cursor)
+    total_pages = math.ceil(total / limit) if limit > 0 else 1
     
-    return {"items": items, "count": len(items)}
+    return {
+        "items": items,
+        "total": total,
+        "page": page,
+        "limit": limit,
+        "total_pages": total_pages,
+        "count": len(items)
+    }
 
 
 @router.get("/ingredients/{name}")

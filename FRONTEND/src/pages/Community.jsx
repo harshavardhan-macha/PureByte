@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import Header from "../components/Header";
-import {Users,Leaf,Star,Trophy,ArrowRight,} from "lucide-react";
+import {Users,Leaf,Star,Trophy,ArrowRight,Loader2,} from "lucide-react";
 import {Link} from "react-router-dom";
 import com from "../assets/com.png";
-import { getCommunityStats } from "../lib/communityApi";
+import { getCommunityStats, getCommunityPosts } from "../lib/communityApi";
+import CommunityPostCard from "../components/dashboard/CommunityPostCard";
+import { showError } from "../lib/toast";
 
 function Community(){
   const [stats, setStats] = useState({
@@ -12,7 +14,9 @@ function Community(){
     mealsAnalyzed: 0,
     sharedExperiences: 0,
   });
+  const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [postsLoading, setPostsLoading] = useState(true);
 
   useEffect(() => {
     let isMounted = true;
@@ -32,12 +36,39 @@ function Community(){
       }
     };
 
+    const loadPosts = async () => {
+      try {
+        const response = await getCommunityPosts();
+        if (isMounted && response?.data) {
+          setPosts(Array.isArray(response.data.items) ? response.data.items : []);
+        }
+      } catch (error) {
+        console.error("Failed to load community posts", error);
+        showError("Could not load posts. Please try again later.");
+      } finally {
+        if (isMounted) {
+          setPostsLoading(false);
+        }
+      }
+    };
+
     loadStats();
+    loadPosts();
 
     return () => {
       isMounted = false;
     };
   }, []);
+
+  const handleLikeUpdate = (postId, updatedData) => {
+    setPosts((prev) =>
+      prev.map((p) =>
+        p.id === postId
+          ? { ...p, likedByMe: updatedData.likedByMe, likeCount: updatedData.likeCount }
+          : p
+      )
+    );
+  };
 
   const formatNumber = (value) => {
     if (value >= 1000000) return `${(value / 1000000).toFixed(value % 1000000 === 0 ? 0 : 1)}M+`;
@@ -47,7 +78,7 @@ function Community(){
 
   return (
    <>
-    <div className="sm:h-10  h-8 bg-gradient-to-b from-green-200 via-green-100 to-white blur-sm opacity-80"></div>
+    <div className="sm:h-10 h-8 bg-linear-to-b from-green-200 via-green-100 to-white blur-sm opacity-80"></div>
         <Header />
     <div className="mx-auto max-w-7xl overflow-x-hidden px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
 
@@ -110,101 +141,50 @@ function Community(){
 
   <div className="text-center mb-8 sm:mb-12">
     <h2 className="text-2xl font-bold sm:text-3xl">
-      What Our Users Say
+      Community Feed
     </h2>
 
     <p className="text-gray-600 mt-3">
-      Real experiences from people using PureByte to understand
-      their food and nutrition better.
+      Discover what other food lovers in the PureByte community are sharing.
+      Like, comment, and connect with others on their healthy eating journey.
     </p>
   </div>
 
-  <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
-
-    {/* Card 1 */}
-    <div className="bg-white border border-green-100 rounded-3xl p-6 shadow-sm hover:shadow-lg transition">
-
-      <div className="flex items-center gap-4">
-        <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center font-bold text-green-600">
-          A
-        </div>
-
-        <div>
-          <h3 className="font-semibold">Ananya</h3>
-          <p className="text-sm text-gray-500">
-            Fitness Enthusiast
-          </p>
+  {/* Community Posts Grid - Instagram Style */}
+  <div className="mx-auto max-w-5xl">
+    {postsLoading ? (
+      <div className="flex justify-center items-center py-12">
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 size={40} className="animate-spin text-green-500" />
+          <p className="text-gray-600">Loading community posts...</p>
         </div>
       </div>
-
-      <p className="mt-5 text-gray-600">
-        "PureByte helped me understand my daily calorie intake.
-        The nutrition insights are quick and easy to understand."
-      </p>
-
-      <div className="mt-4 text-green-500">
-        ⭐⭐⭐⭐⭐
+    ) : posts.length === 0 ? (
+      <div className="text-center py-12">
+        <p className="text-gray-600 mb-4">No posts yet. Be the first to share your experience!</p>
+        <Link
+          to="/shareExp"
+          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-green-500 px-6 py-3 font-semibold text-white transition hover:bg-green-600"
+        >
+          Share Your Experience
+          <ArrowRight size={18} />
+        </Link>
       </div>
-
-    </div>
-
-    {/* Card 2 */}
-    <div className="bg-white border border-green-100 rounded-3xl p-6 shadow-sm hover:shadow-lg transition">
-
-      <div className="flex items-center gap-4">
-        <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center font-bold text-green-600">
-          R
-        </div>
-
-        <div>
-          <h3 className="font-semibold">Rahul</h3>
-          <p className="text-sm text-gray-500">
-            Student
-          </p>
-        </div>
+    ) : (
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {posts.map((post) => (
+          <CommunityPostCard 
+            key={post.id} 
+            post={post} 
+            onLikeUpdate={handleLikeUpdate}
+          />
+        ))}
       </div>
-
-      <p className="mt-5 text-gray-600">
-        "I love how fast the food detection works.
-        Just upload a photo and get nutrition details instantly."
-      </p>
-
-      <div className="mt-4 text-green-500">
-        ⭐⭐⭐⭐⭐
-      </div>
-
-    </div>
-
-    {/* Card 3 */}
-    <div className="bg-white border border-green-100 rounded-3xl p-6 shadow-sm hover:shadow-lg transition">
-
-      <div className="flex items-center gap-4">
-        <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center font-bold text-green-600">
-          S
-        </div>
-
-        <div>
-          <h3 className="font-semibold">Sneha</h3>
-          <p className="text-sm text-gray-500">
-            Health Conscious User
-          </p>
-        </div>
-      </div>
-
-      <p className="mt-5 text-gray-600">
-        "The calorie estimation and nutrition breakdown help me
-        make healthier food choices every day."
-      </p>
-
-      <div className="mt-4 text-green-500">
-        ⭐⭐⭐⭐⭐
-      </div>
-
-    </div>
-</div>
+    )}
+  </div>
 
   {/* Share Experience CTA */}
-  <div className="mt-14 text-center">
+  <div className="mt-16 text-center">
 
     <h3 className="text-xl font-bold sm:text-2xl">
       Want to Share Your Experience?
